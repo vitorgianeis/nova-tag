@@ -707,6 +707,115 @@ textarea {
     }
 }
 
+/* ===== TABELA COMPACTA PARA MOBILE ===== */
+@media (max-width: 768px) {
+    .equipamentos-container {
+        padding: 12px 8px !important;
+        margin: 5px 0 !important;
+    }
+
+    .equipamentos-container h1 {
+        font-size: 1.2rem;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .filtros {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    .filtros select,
+    .filtros input {
+        min-width: 100%;
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* TABELA COMPACTA */
+    #tabela-equipamentos {
+        width: 100%;
+        font-size: 0.75rem;
+        min-width: auto; /* Remove largura mínima */
+    }
+
+    #tabela-equipamentos th,
+    #tabela-equipamentos td {
+        padding: 6px 4px;
+        word-wrap: break-word;
+        max-width: 80px; /* Limita largura máxima */
+    }
+
+    #tabela-equipamentos th:nth-child(1),
+    #tabela-equipamentos td:nth-child(1) {
+        max-width: 120px; /* Material um pouco maior */
+    }
+
+    #tabela-equipamentos th:nth-child(2),
+    #tabela-equipamentos td:nth-child(2) {
+        max-width: 60px; /* Quantidade menor */
+    }
+
+    #tabela-equipamentos th:nth-child(3),
+    #tabela-equipamentos td:nth-child(3) {
+        max-width: 70px; /* Local compacto */
+    }
+
+    #tabela-equipamentos th:nth-child(4),
+    #tabela-equipamentos td:nth-child(4) {
+        max-width: 80px; /* Observações */
+    }
+
+    .status-barracao,
+    .status-outro {
+        font-size: 0.7em;
+        padding: 2px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .equipamentos-container {
+        padding: 8px 5px !important;
+    }
+
+    .equipamentos-container h1 {
+        font-size: 1.1rem;
+    }
+
+    #tabela-equipamentos {
+        font-size: 0.7rem;
+    }
+
+    #tabela-equipamentos th,
+    #tabela-equipamentos td {
+        padding: 4px 3px;
+    }
+
+    #tabela-equipamentos th:nth-child(1),
+    #tabela-equipamentos td:nth-child(1) {
+        max-width: 100px;
+    }
+
+    #tabela-equipamentos th:nth-child(2),
+    #tabela-equipamentos td:nth-child(2) {
+        max-width: 50px;
+    }
+}
+
+/* Para iPhones muito pequenos */
+@media (max-width: 320px) {
+    #tabela-equipamentos {
+        font-size: 0.65rem;
+    }
+
+    #tabela-equipamentos th,
+    #tabela-equipamentos td {
+        padding: 3px 2px;
+    }
+}
 /* Checklist */
 .checklist-item {
     background: rgba(40, 40, 40, 0.8);

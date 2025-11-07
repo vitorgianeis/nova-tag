@@ -100,18 +100,29 @@ function carregarTabelaEquipamentos() {
         return;
     }
     
-    filtrados.forEach(item => {
-        const classeLocal = item.local === "barracão" ? "status-barracao" : "status-outro";
-        
-        tbody.innerHTML += `
-            <tr>
-                <td>${item.material}</td>
-                <td>${item.quantidade || "-"}</td>
-                <td><span class="${classeLocal}">${item.local || "-"}</span></td>
-                <td>${item.obs || "-"}</td>
-            </tr>
-        `;
-    });
+   filtrados.forEach(item => {
+    const classeLocal = item.local === "barracão" ? "status-barracao" : "status-outro";
+    
+    // Nomes mais curtos para mobile
+    let materialCurto = item.material;
+    if (materialCurto.length > 20) {
+        materialCurto = materialCurto.substring(0, 17) + '...';
+    }
+    
+    let obsCurta = item.obs || "-";
+    if (obsCurta.length > 15) {
+        obsCurta = obsCurta.substring(0, 12) + '...';
+    }
+    
+    tbody.innerHTML += `
+        <tr>
+            <td title="${item.material}">${materialCurto}</td>
+            <td>${item.quantidade || "-"}</td>
+            <td><span class="${classeLocal}">${item.local === "barracão" ? "Barracão" : "Outro"}</span></td>
+            <td title="${item.obs || ''}">${obsCurta}</td>
+        </tr>
+    `;
+});
 }
 
 // Sistema de Login
