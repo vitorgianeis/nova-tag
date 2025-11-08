@@ -6,7 +6,6 @@
     <title>Tag Som e Luz - Sistema Integrado</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
 
@@ -75,15 +74,21 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" data-page="eventos">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Gerenciamento de Eventos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="#" class="nav-link" data-page="orcamentos">
                         <i class="fas fa-file-invoice-dollar"></i>
                         <span>Orçamentos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="checklists">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Checklists</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="eventos-agendados">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Eventos Agendados</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -136,64 +141,55 @@
             </div>
             
             <!-- Página de Equipamentos -->
-<div class="page" id="equipamentos">
-    <div class="equipamentos-container">
-        <h1><i class="fas fa-boxes"></i> Controle de Equipamentos</h1>
-        
-        <div class="filtros">
-            <select id="filtro-categoria">
-                <option value="">Todas Categorias</option>
-                <option value="estrutura">Estruturas</option>
-                <option value="iluminacao">Iluminação</option>
-                <option value="som">Sonorização</option>
-                <option value="projecao">Projeção</option>
-                <option value="controle">Controles</option>
-                <option value="acessorio">Acessórios</option>
-            </select>
-            
-            <select id="filtro-local">
-                <option value="">Todos Locais</option>
-                <option value="barracao">Barracão</option>
-                <option value="silene">Silene</option>
-                <option value="san-carlo">San Carlo</option>
-            </select>
-            
-            <input type="text" id="busca" placeholder="Pesquisar equipamento...">
-        </div>
-        
-        <!-- CONTAINER RESPONSIVO ADICIONADO -->
-        <div class="table-responsive">
-            <table id="tabela-equipamentos">
-                <thead>
-                    <tr>
-                        <th>Material</th>
-                        <th>Quantidade</th>
-                        <th>Local</th>
-                        <th>Observações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dados serão inseridos via JavaScript -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-            
-            <!-- Página de Eventos -->
-            <div class="page" id="eventos">
-                <div class="eventos-container">
-                    <h1><i class="fas fa-calendar-alt"></i> Gerenciamento de Eventos</h1>
+            <div class="page" id="equipamentos">
+                <div class="equipamentos-container">
+                    <h1><i class="fas fa-boxes"></i> Controle de Equipamentos</h1>
                     
-                    <!-- Abas -->
-                    <div class="abas">
-                        <div class="aba ativa" onclick="abrirAba('orcamento')">Orçamento</div>
-                        <div class="aba" onclick="abrirAba('checklist')">Checklist Operacional</div>
-                        <div class="aba" onclick="abrirAba('eventos-agendados')">Eventos Agendados</div>
+                    <div class="filtros">
+                        <select id="filtro-categoria">
+                            <option value="">Todas Categorias</option>
+                            <option value="estrutura">Estruturas</option>
+                            <option value="iluminacao">Iluminação</option>
+                            <option value="som">Sonorização</option>
+                            <option value="projecao">Projeção</option>
+                            <option value="controle">Controles</option>
+                            <option value="acessorio">Acessórios</option>
+                        </select>
+                        
+                        <select id="filtro-local">
+                            <option value="">Todos Locais</option>
+                            <option value="barracao">Barracão</option>
+                            <option value="silene">Silene</option>
+                            <option value="san-carlo">San Carlo</option>
+                        </select>
+                        
+                        <input type="text" id="busca" placeholder="Pesquisar equipamento...">
                     </div>
                     
-                    <!-- Aba Orçamento -->
-                    <div id="orcamento" class="conteudo-aba ativa">
+                    <div class="table-responsive">
+                        <table id="tabela-equipamentos">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>Quantidade</th>
+                                    <th>Local</th>
+                                    <th>Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão inseridos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Página de Orçamentos -->
+            <div class="page" id="orcamentos">
+                <div class="eventos-container">
+                    <h1><i class="fas fa-file-invoice-dollar"></i> Orçamentos</h1>
+                    
+                    <div class="form-container-orcamento">
                         <h2>Novo Orçamento</h2>
                         
                         <form id="form-orcamento">
@@ -241,70 +237,24 @@
                         </form>
                     </div>
                     
-                    <!-- Aba Checklist -->
-                    <div id="checklist" class="conteudo-aba">
-                        <h2>Checklist Operacional</h2>
-                        
-                        <div class="form-group">
-                            <label for="selecionar-evento">Selecione o Evento:</label>
-                            <select id="selecionar-evento" class="form-control">
-                                <option value="">Carregando eventos...</option>
-                            </select>
-                        </div>
-                        
-                        <div id="detalhes-evento" style="display: none;">
-                            <h3>Informações do Evento</h3>
-                            <p><strong>Cliente:</strong> <span id="checklist-cliente"></span></p>
-                            <p><strong>Data:</strong> <span id="checklist-data"></span></p>
-                            <p><strong>Local:</strong> <span id="checklist-local"></span></p>
-                            
-                            <h3 style="margin-top: 30px;">Checklist de Equipamentos</h3>
-                            <div id="checklist-equipamentos">
-                                <!-- Gerado dinamicamente -->
+                    <div class="lista-orcamentos-container">
+                        <div class="lista-header">
+                            <h2>Orçamentos Existentes</h2>
+                            <div class="filtros">
+                                <select id="filtro-status">
+                                    <option value="">Todos os Status</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="aprovado">Aprovado</option>
+                                    <option value="recusado">Recusado</option>
+                                </select>
+                                
+                                <input type="text" id="busca-orcamento" placeholder="Pesquisar orçamento...">
                             </div>
-                            
-                            <div class="form-group" style="margin-top: 30px;">
-                                <label for="responsavel">Responsável pela Montagem:</label>
-                                <input type="text" id="responsavel" placeholder="Nome do funcionário">
-                            </div>
-                            
-                            <button class="btn" onclick="salvarChecklist()">SALVAR CHECKLIST</button>
                         </div>
-                    </div>
-                    
-                    <!-- Aba Eventos Agendados -->
-                    <div id="eventos-agendados" class="conteudo-aba">
-                        <h2>Eventos Agendados</h2>
-                        <div id="lista-eventos">
-                            <!-- Gerado dinamicamente -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Página de Orçamentos -->
-            <div class="page" id="orcamentos">
-                <div class="orcamento-container">
-                    <div class="orcamento-header">
-                        <h1><i class="fas fa-file-invoice-dollar"></i> Orçamentos</h1>
-                        <button class="btn" onclick="novoOrcamento()">
-                            <i class="fas fa-plus"></i> Novo Orçamento
-                        </button>
-                    </div>
-                    
-                    <div class="filtros">
-                        <select id="filtro-status">
-                            <option value="">Todos os Status</option>
-                            <option value="pendente">Pendente</option>
-                            <option value="aprovado">Aprovado</option>
-                            <option value="recusado">Recusado</option>
-                        </select>
                         
-                        <input type="text" id="busca-orcamento" placeholder="Pesquisar orçamento...">
-                    </div>
-                    
-                    <div id="lista-orcamentos">
-                        <!-- Orçamentos serão carregados aqui -->
+                        <div id="lista-orcamentos">
+                            <!-- Orçamentos serão carregados aqui -->
+                        </div>
                     </div>
                 </div>
                 
@@ -360,7 +310,7 @@
                             Total: <span id="total-orcamento">R$ 0,00</span>
                         </div>
                         
-                        <div style="margin-top: 30px; display: flex; gap: 15px;">
+                        <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
                             <button class="btn" style="background: var(--success);" id="btn-aprovar">Aprovar Orçamento</button>
                             <button class="btn" style="background: var(--danger);" id="btn-recusar">Recusar Orçamento</button>
                             <button class="btn" style="background: var(--dark);" id="btn-deletar">
@@ -372,10 +322,53 @@
                 </div>
             </div>
             
+            <!-- Página de Checklists -->
+            <div class="page" id="checklists">
+                <div class="eventos-container">
+                    <h1><i class="fas fa-clipboard-check"></i> Checklists Operacionais</h1>
+                    
+                    <div class="form-group">
+                        <label for="selecionar-evento">Selecione o Evento:</label>
+                        <select id="selecionar-evento" class="form-control">
+                            <option value="">Carregando eventos...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="detalhes-evento" style="display: none;">
+                        <h3>Informações do Evento</h3>
+                        <p><strong>Cliente:</strong> <span id="checklist-cliente"></span></p>
+                        <p><strong>Data:</strong> <span id="checklist-data"></span></p>
+                        <p><strong>Local:</strong> <span id="checklist-local"></span></p>
+                        
+                        <h3 style="margin-top: 30px;">Checklist de Equipamentos</h3>
+                        <div id="checklist-equipamentos">
+                            <!-- Gerado dinamicamente -->
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 30px;">
+                            <label for="responsavel">Responsável pela Montagem:</label>
+                            <input type="text" id="responsavel" placeholder="Nome do funcionário">
+                        </div>
+                        
+                        <button class="btn" onclick="salvarChecklist()">SALVAR CHECKLIST</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Página de Eventos Agendados -->
+            <div class="page" id="eventos-agendados">
+                <div class="eventos-container">
+                    <h1><i class="fas fa-calendar-alt"></i> Eventos Agendados</h1>
+                    <div id="lista-eventos">
+                        <!-- Gerado dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            
             <!-- Página de Agendamento -->
             <div class="page" id="agendamento">
                 <div class="eventos-container">
-                    <h1><i class="fas fa-calendar-alt"></i> Agenda de Eventos</h1>
+                    <h1><i class="fas fa-calendar-check"></i> Agenda de Eventos</h1>
                     
                     <div class="calendar-container">
                         <div class="calendar-header">
