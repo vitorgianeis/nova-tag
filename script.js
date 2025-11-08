@@ -14,15 +14,11 @@ let orcamentos = JSON.parse(localStorage.getItem('orcamentos')) || [];
 let eventos = JSON.parse(localStorage.getItem('eventos')) || [];
 let checklists = JSON.parse(localStorage.getItem('checklists')) || [];
 
-// Sistema de Login - COM VERIFICAÇÃO
+// Sistema de Login
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
     const loginPage = document.getElementById('loginPage');
     const appContainer = document.getElementById('appContainer');
-    
-    console.log('Login form:', loginForm); // Debug
-    console.log('Login page:', loginPage); // Debug
-    console.log('App container:', appContainer); // Debug
     
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -30,9 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const username = this.username.value;
             const password = this.password.value;
             
-            console.log('Tentando login:', username, password); // Debug
-            
-            // Simulação de login
             if (username && password) {
                 showLoading();
                 setTimeout(() => {
@@ -45,8 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 showToast('Preencha usuário e senha!', 'warning');
             }
         });
-    } else {
-        console.error('Formulário de login não encontrado!');
     }
 });
 
@@ -62,27 +53,20 @@ document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
         
-        // Remove classe active de todos os links
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        // Adiciona classe active ao link clicado
         this.classList.add('active');
         
-        // Oculta todas as páginas
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         
-        // Mostra a página correspondente
         const pageId = this.getAttribute('data-page');
         document.getElementById(pageId).classList.add('active');
         
-        // Atualiza o título da página
         document.getElementById('currentPageTitle').textContent = this.querySelector('span').textContent;
         
-        // Fecha sidebar no mobile
         if (window.innerWidth <= 768) {
             document.querySelector('.sidebar').classList.remove('active');
         }
         
-        // Carrega dados específicos da página
         if (pageId === 'equipamentos') {
             carregarEquipamentos();
         } else if (pageId === 'orcamentos') {
@@ -118,7 +102,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Verificar tamanho da tela e mostrar/ocultar menu mobile
+// Verificar tamanho da tela
 function checkScreenSize() {
     if (window.innerWidth <= 768) {
         mobileMenuToggle.style.display = 'block';
@@ -235,7 +219,6 @@ function carregarEquipamentosOrcamento() {
         container.appendChild(div);
     });
     
-    // Event listeners para checkboxes
     document.querySelectorAll('#lista-equipamentos input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const quantidadeContainer = this.closest('.equipamento-card').querySelector('.quantidade-container');
@@ -244,15 +227,13 @@ function carregarEquipamentosOrcamento() {
         });
     });
     
-    // Event listeners para inputs de quantidade
     document.querySelectorAll('#lista-equipamentos input[type="number"]').forEach(input => {
         input.addEventListener('input', calcularTotalOrcamento);
     });
 }
 
-// 🔥🔥🔥 ADICIONE ESTE CÓDIGO AQUI - CONTROLE DO FORMULÁRIO 🔥🔥🔥
+// Controle do formulário de orçamentos
 document.addEventListener('DOMContentLoaded', function() {
-    // Botão Novo Orçamento
     const btnNovo = document.getElementById('btn-novo-orcamento');
     const formContainer = document.getElementById('form-container-orcamento');
     const btnCancelar = document.getElementById('btn-cancelar');
@@ -260,8 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnNovo && formContainer) {
         btnNovo.addEventListener('click', function() {
             formContainer.style.display = 'block';
-            carregarEquipamentosOrcamento(); // ⬅️ CARREGA OS EQUIPAMENTOS
-            // Rolar suavemente até o formulário
+            carregarEquipamentosOrcamento();
             formContainer.scrollIntoView({ behavior: 'smooth' });
         });
     }
@@ -269,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnCancelar) {
         btnCancelar.addEventListener('click', function() {
             formContainer.style.display = 'none';
-            // Limpar formulário ao cancelar
             document.getElementById('form-orcamento').reset();
             document.getElementById('total-orcamento-form').textContent = '0.00';
             document.querySelectorAll('#lista-equipamentos input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -277,10 +256,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-// 🔥🔥🔥 FIM DO CÓDIGO ADICIONADO 🔥🔥🔥
 
 function calcularValorEquipamento(equipamento) {
-    // Valores fictícios baseados no tipo de equipamento
     const valores = {
         'som': 150,
         'iluminacao': 80,
@@ -317,7 +294,6 @@ document.getElementById('form-orcamento').addEventListener('submit', function(e)
     const local = document.getElementById('local').value;
     const observacoes = document.getElementById('observacoes').value;
     
-    // Coletar equipamentos selecionados
     const equipamentosSelecionados = [];
     document.querySelectorAll('#lista-equipamentos input[type="checkbox"]:checked').forEach(checkbox => {
         const id = checkbox.getAttribute('data-id');
@@ -360,7 +336,6 @@ document.getElementById('form-orcamento').addEventListener('submit', function(e)
     
     showToast('Orçamento criado com sucesso!', 'success');
     
-    // 🔥🔥🔥 ADICIONE ESTAS LINHAS PARA FECHAR O FORMULÁRIO APÓS SALVAR 🔥🔥🔥
     document.getElementById('form-container-orcamento').style.display = 'none';
     this.reset();
     document.getElementById('total-orcamento-form').textContent = '0.00';
@@ -368,25 +343,6 @@ document.getElementById('form-orcamento').addEventListener('submit', function(e)
     document.querySelectorAll('.quantidade-container').forEach(container => container.style.display = 'none');
     
     carregarOrcamentos();
-});
-
-// 🔥🔥🔥 ATUALIZE A NAVEGAÇÃO PARA CARREGAR ORÇAMENTOS 🔥🔥🔥
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const pageId = this.getAttribute('data-page');
-        
-        if (pageId === 'orcamentos') {
-            // Garantir que o formulário está fechado ao entrar na página
-            const formContainer = document.getElementById('form-container-orcamento');
-            if (formContainer) {
-                formContainer.style.display = 'none';
-            }
-            carregarOrcamentos();
-        }
-        // ... resto do seu código de navegação
-    });
 });
 
 function carregarOrcamentos() {
@@ -428,7 +384,6 @@ function carregarOrcamentos() {
             ` : ''}
         `;
         
-        // Evento para mostrar detalhes
         div.addEventListener('click', (e) => {
             if (!e.target.classList.contains('btn-aceitar') && !e.target.classList.contains('btn-recusar')) {
                 mostrarDetalhesOrcamento(orc.id);
@@ -438,7 +393,6 @@ function carregarOrcamentos() {
         container.appendChild(div);
     });
     
-    // Adicionar eventos aos botões
     document.querySelectorAll('.btn-aceitar').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -456,12 +410,10 @@ function carregarOrcamentos() {
     });
 }
 
-// Função para aceitar orçamento
 function aceitarOrcamento(id) {
     const orcamento = orcamentos.find(o => o.id === id);
     if (!orcamento) return;
     
-    // Verificar disponibilidade dos equipamentos
     const equipamentosDisponiveis = verificarDisponibilidade(orcamento.equipamentos);
     
     if (!equipamentosDisponiveis.todosDisponiveis) {
@@ -469,24 +421,16 @@ function aceitarOrcamento(id) {
         return;
     }
     
-    // Atualizar status do orçamento
     orcamento.status = 'aprovado';
     localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
     
-    // Reservar equipamentos
     reservarEquipamentos(orcamento.equipamentos);
-    
-    // Criar evento automaticamente
     criarEventoFromOrcamento(orcamento);
     
     showToast('Orçamento aceito e evento criado!', 'success');
     carregarOrcamentos();
-    
-    // Fechar detalhes se estiver aberto
-    fecharDetalhes();
 }
 
-// Função para recusar orçamento
 function recusarOrcamento(id) {
     const orcamento = orcamentos.find(o => o.id === id);
     if (!orcamento) return;
@@ -496,10 +440,8 @@ function recusarOrcamento(id) {
     
     showToast('Orçamento recusado!', 'info');
     carregarOrcamentos();
-    fecharDetalhes();
 }
 
-// Verificar disponibilidade dos equipamentos
 function verificarDisponibilidade(equipamentosOrcamento) {
     for (const equipOrc of equipamentosOrcamento) {
         const equipamento = equipamentos.find(e => e.id === equipOrc.id);
@@ -513,7 +455,6 @@ function verificarDisponibilidade(equipamentosOrcamento) {
     return { todosDisponiveis: true };
 }
 
-// Reservar equipamentos
 function reservarEquipamentos(equipamentosOrcamento) {
     equipamentosOrcamento.forEach(equipOrc => {
         const equipamento = equipamentos.find(e => e.id === equipOrc.id);
@@ -524,7 +465,6 @@ function reservarEquipamentos(equipamentosOrcamento) {
     localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
 }
 
-// Criar evento a partir do orçamento
 function criarEventoFromOrcamento(orcamento) {
     const novoEvento = {
         id: Date.now(),
@@ -544,143 +484,6 @@ function criarEventoFromOrcamento(orcamento) {
     showToast('Evento criado automaticamente!', 'success');
 }
 
-// Atualizar a função mostrarDetalhesOrcamento para incluir botões
-function mostrarDetalhesOrcamento(id) {
-    const orcamento = orcamentos.find(o => o.id === id);
-    if (!orcamento) return;
-    
-    document.getElementById('orcamento-titulo').textContent = `Orçamento - ${orcamento.cliente}`;
-    document.getElementById('orc-cliente').textContent = orcamento.cliente;
-    document.getElementById('orc-data').textContent = formatarData(orcamento.data);
-    document.getElementById('orc-local').textContent = orcamento.local;
-    document.getElementById('orc-status').textContent = orcamento.status.toUpperCase();
-    document.getElementById('orc-tipo').textContent = orcamento.tipoEvento;
-    document.getElementById('orc-observacoes').textContent = orcamento.observacoes || 'Nenhuma';
-    
-    const tabela = document.getElementById('tabela-equipamentos-orc');
-    if (tabela) {
-        tabela.innerHTML = '';
-        
-        orcamento.equipamentos.forEach(equip => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${equip.nome}</td>
-                <td>${equip.quantidade}</td>
-                <td>R$ ${equip.valorUnitario.toFixed(2)}</td>
-                <td>R$ ${equip.subtotal.toFixed(2)}</td>
-            `;
-            tabela.appendChild(tr);
-        });
-    }
-    
-    document.getElementById('total-orcamento').textContent = `R$ ${orcamento.total.toFixed(2)}`;
-    
-    // Adicionar botões de ação nos detalhes
-    const botoesContainer = document.getElementById('botoes-acao-orcamento');
-    if (botoesContainer) {
-        if (orcamento.status === 'pendente') {
-            botoesContainer.innerHTML = `
-                <button onclick="aceitarOrcamento(${orcamento.id})" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px;">Aceitar Orçamento</button>
-                <button onclick="recusarOrcamento(${orcamento.id})" style="background: #F44336; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Recusar Orçamento</button>
-            `;
-        } else {
-            botoesContainer.innerHTML = `
-                <div style="color: ${getStatusColor(orcamento.status)}; font-weight: bold;">
-                    Status: ${orcamento.status.toUpperCase()}
-                </div>
-            `;
-        }
-    }
-    
-    document.querySelector('.eventos-container').style.display = 'none';
-    document.getElementById('detalhes-orcamento').style.display = 'block';
-}
-
-// Adicionar este CSS para os botões
-function adicionarCSSBotoes() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .btn-aceitar:hover {
-            background: #45a049 !important;
-            transform: translateY(-1px);
-        }
-        
-        .btn-recusar:hover {
-            background: #d32f2f !important;
-            transform: translateY(-1px);
-        }
-        
-        .orcamento-item {
-            transition: all 0.3s ease;
-        }
-        
-        .orcamento-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Inicializar dados de exemplo
-function inicializarDadosExemplo() {
-    eventos = [
-        {
-            id: 1,
-            cliente: "Maria Silva",
-            tipoEvento: "Casamento",
-            data: "2024-06-15",
-            local: "Salão de Festas Jardim",
-            equipamentos: [
-                { id: 1, nome: "Caixa de Som JBL", quantidade: 2 },
-                { id: 4, nome: "Par 56 LED", quantidade: 12 },
-                { id: 3, nome: "Microfone Sem Fio", quantidade: 2 }
-            ],
-            status: 'agendado'
-        },
-        {
-            id: 2,
-            cliente: "Empresa XYZ",
-            tipoEvento: "Evento Corporativo",
-            data: "2024-06-20",
-            local: "Centro de Convenções",
-            equipamentos: [
-                { id: 2, nome: "Mesa de Som Yamaha", quantidade: 1 },
-                { id: 1, nome: "Caixa de Som JBL", quantidade: 4 },
-                { id: 7, nome: "Projetor Epson", quantidade: 1 }
-            ],
-            status: 'agendado'
-        }
-    ];
-    localStorage.setItem('eventos', JSON.stringify(eventos));
-    
-    // Adicionar alguns orçamentos de exemplo
-    orcamentos = [
-        {
-            id: 1,
-            cliente: "João Santos",
-            tipoEvento: "Aniversário",
-            data: "2024-07-01",
-            local: "Casa de Festas",
-            observacoes: "Evento para 50 pessoas",
-            equipamentos: [
-                { id: 1, nome: "Caixa de Som JBL", quantidade: 2, valorUnitario: 150, subtotal: 300 },
-                { id: 4, nome: "Par 56 LED", quantidade: 8, valorUnitario: 80, subtotal: 640 }
-            ],
-            total: 940,
-            status: 'pendente',
-            dataCriacao: new Date().toISOString()
-        }
-    ];
-    localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
-    localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
-}
-
-// Chamar a função para adicionar CSS quando o DOM carregar
-document.addEventListener('DOMContentLoaded', function() {
-    adicionarCSSBotoes();
-});
-
 function getStatusColor(status) {
     const cores = {
         'pendente': '#FFC107',
@@ -693,42 +496,6 @@ function getStatusColor(status) {
 function formatarData(dataString) {
     const data = new Date(dataString);
     return data.toLocaleDateString('pt-BR');
-}
-
-function mostrarDetalhesOrcamento(id) {
-    const orcamento = orcamentos.find(o => o.id === id);
-    if (!orcamento) return;
-    
-    document.getElementById('orcamento-titulo').textContent = `Orçamento - ${orcamento.cliente}`;
-    document.getElementById('orc-cliente').textContent = orcamento.cliente;
-    document.getElementById('orc-data').textContent = formatarData(orcamento.data);
-    document.getElementById('orc-local').textContent = orcamento.local;
-    document.getElementById('orc-status').textContent = orcamento.status.toUpperCase();
-    
-    const tabela = document.getElementById('tabela-equipamentos-orc');
-    tabela.innerHTML = '';
-    
-    orcamento.equipamentos.forEach(equip => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${equip.nome}</td>
-            <td>${equip.quantidade}</td>
-            <td>1</td>
-            <td>R$ ${equip.valorUnitario.toFixed(2)}</td>
-            <td>R$ ${equip.subtotal.toFixed(2)}</td>
-        `;
-        tabela.appendChild(tr);
-    });
-    
-    document.getElementById('total-orcamento').textContent = `R$ ${orcamento.total.toFixed(2)}`;
-    
-    document.querySelector('.eventos-container').style.display = 'none';
-    document.getElementById('detalhes-orcamento').style.display = 'block';
-}
-
-function fecharDetalhes() {
-    document.getElementById('detalhes-orcamento').style.display = 'none';
-    document.querySelector('.eventos-container').style.display = 'block';
 }
 
 // Sistema de Checklists
@@ -754,14 +521,10 @@ function carregarEventosChecklist() {
 }
 
 function carregarDetalhesEventoChecklist(eventoId) {
-    console.log('🔍 Carregando evento:', eventoId);
-    
     const evento = eventos.find(e => e.id === eventoId);
     if (!evento) return;
     
-    // VERIFICAR SE JÁ EXISTE CHECKLIST SALVO PARA ESTE EVENTO
     const checklistSalvo = checklists.find(c => c.eventoId === eventoId);
-    console.log('📋 Checklist salvo encontrado:', checklistSalvo);
     
     document.getElementById('checklist-cliente').textContent = evento.cliente;
     document.getElementById('checklist-data').textContent = formatarData(evento.data);
@@ -771,13 +534,11 @@ function carregarDetalhesEventoChecklist(eventoId) {
     container.innerHTML = '';
     
     evento.equipamentos.forEach(equip => {
-        // ENCONTRAR O STATUS SALVO PARA ESTE EQUIPAMENTO (se existir)
-        let statusSelecionado = 'pendente'; // valor padrão
+        let statusSelecionado = 'pendente';
         if (checklistSalvo && checklistSalvo.equipamentos) {
             const equipamentoSalvo = checklistSalvo.equipamentos.find(e => e.equipamentoId === equip.id);
             if (equipamentoSalvo) {
                 statusSelecionado = equipamentoSalvo.status;
-                console.log(`✅ Equipamento ${equip.id} - Status carregado: ${statusSelecionado}`);
             }
         }
         
@@ -800,23 +561,16 @@ function carregarDetalhesEventoChecklist(eventoId) {
         container.appendChild(div);
     });
     
-    // PREENCHER O RESPONSÁVEL SE JÁ EXISTIR CHECKLIST
     if (checklistSalvo) {
         document.getElementById('responsavel').value = checklistSalvo.responsavel || '';
-        console.log('👤 Responsável carregado:', checklistSalvo.responsavel);
     }
     
     document.getElementById('detalhes-evento').style.display = 'block';
 }
 
-// 🔥 REMOVA A OUTRA FUNÇÃO salvarChecklist() E MANTENHA APENAS ESTA:
 function salvarChecklist() {
-    console.log('💾 Tentando salvar checklist...');
-    
     const eventoId = parseInt(document.getElementById('selecionar-evento').value);
     const responsavel = document.getElementById('responsavel').value;
-    
-    console.log('Dados:', { eventoId, responsavel });
     
     if (!eventoId || !responsavel) {
         showToast('Preencha todos os campos!', 'warning');
@@ -832,13 +586,9 @@ function salvarChecklist() {
             equipamentoId: parseInt(equipId),
             status: status
         });
-        
-        console.log(`📦 Equipamento ${equipId} - Status: ${status}`);
     });
     
-    // VERIFICAR SE JÁ EXISTE CHECKLIST PARA ESTE EVENTO
     const checklistExistenteIndex = checklists.findIndex(c => c.eventoId === eventoId);
-    console.log('Índice do checklist existente:', checklistExistenteIndex);
     
     const checklist = {
         id: checklistExistenteIndex !== -1 ? checklists[checklistExistenteIndex].id : Date.now(),
@@ -849,42 +599,31 @@ function salvarChecklist() {
         dataAtualizacao: new Date().toISOString()
     };
     
-    // SE JÁ EXISTIR, ATUALIZAR. SE NÃO, ADICIONAR NOVO.
     if (checklistExistenteIndex !== -1) {
         checklists[checklistExistenteIndex] = checklist;
-        console.log('🔄 Checklist atualizado');
         showToast('Checklist atualizado com sucesso!', 'success');
     } else {
         checklists.push(checklist);
-        console.log('🆕 Novo checklist criado');
         showToast('Checklist salvo com sucesso!', 'success');
     }
     
-    // SALVAR NO LOCALSTORAGE
     localStorage.setItem('checklists', JSON.stringify(checklists));
-    console.log('💾 Checklists salvos:', checklists);
     
-    // RECARREGAR OS DADOS PARA VERIFICAR
     setTimeout(() => {
         carregarDetalhesEventoChecklist(eventoId);
     }, 1000);
 }
 
-// Adicione esta função para conectar o botão
+// Conectar o botão salvar checklist
 document.addEventListener('DOMContentLoaded', function() {
-    // Conectar o botão salvar checklist
     const btnSalvar = document.getElementById('btn-salvar-checklist');
     if (btnSalvar) {
         btnSalvar.addEventListener('click', function(e) {
             e.preventDefault();
             salvarChecklist();
         });
-        console.log('✅ Botão salvar checklist conectado!');
     }
-    
-    // Debug inicial
-    console.log('🔍 Checklists no startup:', checklists);
-})
+});
 
 // Sistema de Eventos Agendados
 function carregarEventosAgendados() {
@@ -951,7 +690,6 @@ function renderCalendar() {
     const calendarGrid = document.getElementById('calendar-grid');
     calendarGrid.innerHTML = '';
     
-    // Cabeçalho dos dias da semana
     const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
     daysOfWeek.forEach(day => {
         const dayHeader = document.createElement('div');
@@ -963,14 +701,12 @@ function renderCalendar() {
     const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     
-    // Dias vazios no início
     for (let i = 0; i < firstDay.getDay(); i++) {
         const emptyDay = document.createElement('div');
         emptyDay.className = 'calendar-day empty';
         calendarGrid.appendChild(emptyDay);
     }
     
-    // Dias do mês
     for (let day = 1; day <= lastDay.getDate(); day++) {
         const dayElement = document.createElement('div');
         dayElement.className = 'calendar-day';
@@ -980,7 +716,6 @@ function renderCalendar() {
         dayHeader.textContent = day;
         dayElement.appendChild(dayHeader);
         
-        // Verificar se há eventos neste dia
         const currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
         const dayEvents = eventos.filter(evento => {
             const eventDate = new Date(evento.data);
@@ -991,7 +726,6 @@ function renderCalendar() {
             const eventElement = document.createElement('div');
             eventElement.className = 'event-item';
             eventElement.textContent = evento.cliente;
-            eventElement.addEventListener('click', () => mostrarDetalhesEvento(evento.id));
             dayElement.appendChild(eventElement);
         });
         
@@ -1014,7 +748,6 @@ function carregarListaEventos() {
             margin-bottom: 10px;
             border-radius: 8px;
             border-left: 4px solid var(--primary);
-            cursor: pointer;
         `;
         div.innerHTML = `
             <h4 style="margin: 0 0 5px 0; color: var(--primary);">${evento.cliente}</h4>
@@ -1022,53 +755,15 @@ function carregarListaEventos() {
             <p style="margin: 0 0 5px 0;"><strong>Local:</strong> ${evento.local}</p>
             <p style="margin: 0;"><strong>Tipo:</strong> ${evento.tipoEvento}</p>
         `;
-        
-        div.addEventListener('click', () => mostrarDetalhesEvento(evento.id));
         container.appendChild(div);
     });
 }
-
-function mostrarDetalhesEvento(eventoId) {
-    const evento = eventos.find(e => e.id === eventoId);
-    if (!evento) return;
-    
-    document.getElementById('modal-title').textContent = `Evento - ${evento.cliente}`;
-    document.getElementById('event-cliente').value = evento.cliente;
-    document.getElementById('event-data').value = formatarData(evento.data);
-    document.getElementById('event-local').value = evento.local;
-    document.getElementById('event-tipo').value = evento.tipoEvento;
-    
-    const equipamentosContainer = document.getElementById('event-equipamentos');
-    equipamentosContainer.innerHTML = '';
-    evento.equipamentos.forEach(equip => {
-        const div = document.createElement('div');
-        div.style.cssText = 'margin-bottom: 5px; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 3px;';
-        div.textContent = `${equip.nome} (${equip.quantidade}x)`;
-        equipamentosContainer.appendChild(div);
-    });
-    
-    document.getElementById('event-modal').style.display = 'flex';
-}
-
-// Fechar modal
-document.getElementById('close-modal').addEventListener('click', function() {
-    document.getElementById('event-modal').style.display = 'none';
-});
-
-// Fechar modal ao clicar fora
-window.addEventListener('click', function(e) {
-    const modal = document.getElementById('event-modal');
-    if (e.target === modal) {
-        modal.style.display = 'none';
-    }
-});
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     checkScreenSize();
     carregarEquipamentos();
     
-    // Simular alguns eventos para demonstração
     if (eventos.length === 0) {
         eventos = [
             {
@@ -1099,4 +794,3 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('eventos', JSON.stringify(eventos));
     }
 });
-
