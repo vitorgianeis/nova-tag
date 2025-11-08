@@ -402,6 +402,7 @@ body {
     width: 100%;
     box-sizing: border-box;
 }
+
 /* RESET PARA GARANTIR TELA INTEIRA */
 html, body {
     width: 100%;
@@ -539,7 +540,15 @@ tr:last-child td {
     padding: 25px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 107, 0, 0.2);
-    margin-bottom: 30px;
+    margin-bottom: 30px;    width: 100%;
+    box-sizing: border-box;
+}
+
+/* RESET PARA GARANTIR TELA INTEIRA */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .abas {
