@@ -2,13 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tag Som e Luz - Sistema Integrado</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <!-- Página de Login -->
     <div class="login-page" id="loginPage">
         <!-- Efeitos de fundo -->
@@ -27,7 +26,10 @@
         <div class="form-container">
             <div class="form-box">
                 <div class="form-logo">
-                    <img src="src/tag.png" alt="Tag Som e Luz">
+                    <div class="logo-placeholder">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>TAG</span>
+                    </div>
                 </div>
                 
                 <form id="login-form">
@@ -49,6 +51,11 @@
     
     <!-- Sistema Principal -->
     <div class="app-container" id="appContainer" style="display: none;">
+        <!-- Menu Mobile -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">
+            <i class="fas fa-bars"></i>
+        </button>
+        
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
@@ -158,7 +165,9 @@
                         
                         <select id="filtro-local">
                             <option value="">Todos Locais</option>
-                            
+                            <option value="barracao">Barracão</option>
+                            <option value="silene">Silene</option>
+                            <option value="san-carlo">San Carlo</option>
                         </select>
                         
                         <input type="text" id="busca" placeholder="Pesquisar equipamento...">
@@ -170,7 +179,7 @@
                                 <tr>
                                     <th>Material</th>
                                     <th>Quantidade</th>
-                                    
+                                    <th>Local</th>
                                     <th>Observações</th>
                                 </tr>
                             </thead>
@@ -255,69 +264,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Detalhes do Orçamento -->
-                <div id="detalhes-orcamento" style="display: none;">
-                    <div class="orcamento-container">
-                        <div class="orcamento-header">
-                            <h1 id="orcamento-titulo">Detalhes do Orçamento</h1>
-                            <button class="btn" id="btn-export">
-                                <i class="fas fa-file-pdf"></i> Exportar PDF
-                            </button>
-                        </div>
-                        
-                        <div class="orcamento-info">
-                            <div class="info-card">
-                                <h3>Cliente</h3>
-                                <p id="orc-cliente">-</p>
-                            </div>
-                            
-                            <div class="info-card">
-                                <h3>Data do Evento</h3>
-                                <p id="orc-data">-</p>
-                            </div>
-                            
-                            <div class="info-card">
-                                <h3>Local</h3>
-                                <p id="orc-local">-</p>
-                            </div>
-                            
-                            <div class="info-card">
-                                <h3>Status</h3>
-                                <p id="orc-status">-</p>
-                            </div>
-                        </div>
-                        
-                        <h3>Equipamentos</h3>
-                        <table class="equipamentos-table">
-                            <thead>
-                                <tr>
-                                    <th>Equipamento</th>
-                                    <th>Quantidade</th>
-                                    <th>Dias</th>
-                                    <th>Valor Unitário</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela-equipamentos-orc">
-                                <!-- Itens serão preenchidos por JS -->
-                            </tbody>
-                        </table>
-                        
-                        <div class="total-orcamento">
-                            Total: <span id="total-orcamento">R$ 0,00</span>
-                        </div>
-                        
-                        <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button class="btn" style="background: var(--success);" id="btn-aprovar">Aprovar Orçamento</button>
-                            <button class="btn" style="background: var(--danger);" id="btn-recusar">Recusar Orçamento</button>
-                            <button class="btn" style="background: var(--dark);" id="btn-deletar">
-                                <i class="fas fa-trash"></i> Excluir
-                            </button>
-                            <button class="btn" onclick="fecharDetalhes()">Voltar</button>
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <!-- Página de Checklists -->
@@ -348,7 +294,19 @@
                             <input type="text" id="responsavel" placeholder="Nome do funcionário">
                         </div>
                         
-                        <button class="btn" onclick="salvarChecklist()">SALVAR CHECKLIST</button>
+                       <button id="btn-salvar-checklist" onclick="salvarChecklist()" style="
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 20px;
+    width: 100%;
+">
+    💾 Salvar Checklist
+</button>
                     </div>
                 </div>
             </div>
@@ -394,68 +352,13 @@
         </div>
     </div>
 
-    <!-- Modal de Detalhes do Evento -->
-    <div class="modal" id="event-modal">
-        <div class="modal-content">
-            <span class="close-modal" id="close-modal">&times;</span>
-            <h2 id="modal-title">Detalhes do Evento</h2>
-            
-            <div class="form-group">
-                <label for="event-cliente">Cliente</label>
-                <input type="text" id="event-cliente" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label for="event-data">Data</label>
-                <input type="text" id="event-data" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label for="event-local">Local</label>
-                <input type="text" id="event-local" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label for="event-tipo">Tipo de Evento</label>
-                <input type="text" id="event-tipo" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label>Equipamentos</label>
-                <div id="event-equipamentos" style="max-height: 200px; overflow-y: auto; background: rgba(40,40,40,0.8); padding: 10px; border-radius: 5px;"></div>
-            </div>
-            
-            <div class="form-group">
-                <label for="event-responsavel">Responsável</label>
-                <input type="text" id="event-responsavel">
-            </div>
-            
-            <div class="form-group">
-                <label for="event-observacoes">Observações</label>
-                <textarea id="event-observacoes" rows="3"></textarea>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn" id="btn-salvar-evento">Salvar</button>
-                <button class="btn" style="background: var(--danger);" id="btn-cancelar-evento">Cancelar Evento</button>
-            </div>
-        </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="confirmation-modal" id="confirmationModal">
-        <div class="confirmation-content">
-            <h2><i class="fas fa-exclamation-triangle" style="color: var(--warning); margin-bottom: 15px;"></i></h2>
-            <h3>Confirmar Exclusão</h3>
-            <p>Tem certeza que deseja excluir permanentemente este orçamento?</p>
-            <p style="font-size: 0.9rem; color: var(--gray); margin-top: 10px;">Esta ação não pode ser desfeita.</p>
-            
-            <div class="confirmation-buttons">
-                <button class="btn-cancel" id="btn-cancel-delete">Cancelar</button>
-                <button class="btn-confirm" id="btn-confirm-delete">Excluir Permanentemente</button>
-            </div>
-        </div>
-    </div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="script.js"></script>
 </body>
