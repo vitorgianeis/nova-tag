@@ -250,6 +250,35 @@ function carregarEquipamentosOrcamento() {
     });
 }
 
+// 🔥🔥🔥 ADICIONE ESTE CÓDIGO AQUI - CONTROLE DO FORMULÁRIO 🔥🔥🔥
+document.addEventListener('DOMContentLoaded', function() {
+    // Botão Novo Orçamento
+    const btnNovo = document.getElementById('btn-novo-orcamento');
+    const formContainer = document.getElementById('form-container-orcamento');
+    const btnCancelar = document.getElementById('btn-cancelar');
+
+    if (btnNovo && formContainer) {
+        btnNovo.addEventListener('click', function() {
+            formContainer.style.display = 'block';
+            carregarEquipamentosOrcamento(); // ⬅️ CARREGA OS EQUIPAMENTOS
+            // Rolar suavemente até o formulário
+            formContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', function() {
+            formContainer.style.display = 'none';
+            // Limpar formulário ao cancelar
+            document.getElementById('form-orcamento').reset();
+            document.getElementById('total-orcamento-form').textContent = '0.00';
+            document.querySelectorAll('#lista-equipamentos input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.quantidade-container').forEach(container => container.style.display = 'none');
+        });
+    }
+});
+// 🔥🔥🔥 FIM DO CÓDIGO ADICIONADO 🔥🔥🔥
+
 function calcularValorEquipamento(equipamento) {
     // Valores fictícios baseados no tipo de equipamento
     const valores = {
@@ -330,12 +359,34 @@ document.getElementById('form-orcamento').addEventListener('submit', function(e)
     localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
     
     showToast('Orçamento criado com sucesso!', 'success');
+    
+    // 🔥🔥🔥 ADICIONE ESTAS LINHAS PARA FECHAR O FORMULÁRIO APÓS SALVAR 🔥🔥🔥
+    document.getElementById('form-container-orcamento').style.display = 'none';
     this.reset();
     document.getElementById('total-orcamento-form').textContent = '0.00';
     document.querySelectorAll('#lista-equipamentos input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('.quantidade-container').forEach(container => container.style.display = 'none');
     
     carregarOrcamentos();
+});
+
+// 🔥🔥🔥 ATUALIZE A NAVEGAÇÃO PARA CARREGAR ORÇAMENTOS 🔥🔥🔥
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const pageId = this.getAttribute('data-page');
+        
+        if (pageId === 'orcamentos') {
+            // Garantir que o formulário está fechado ao entrar na página
+            const formContainer = document.getElementById('form-container-orcamento');
+            if (formContainer) {
+                formContainer.style.display = 'none';
+            }
+            carregarOrcamentos();
+        }
+        // ... resto do seu código de navegação
+    });
 });
 
 function carregarOrcamentos() {
@@ -1048,3 +1099,4 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('eventos', JSON.stringify(eventos));
     }
 });
+

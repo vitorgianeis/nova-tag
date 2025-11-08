@@ -192,79 +192,105 @@
             </div>
             
             <!-- Página de Orçamentos -->
-            <div class="page" id="orcamentos">
-                <div class="eventos-container">
-                    <h1><i class="fas fa-file-invoice-dollar"></i> Orçamentos</h1>
-                    
-                    <div class="form-container-orcamento">
-                        <h2>Novo Orçamento</h2>
-                        
-                        <form id="form-orcamento">
-                            <div class="form-group">
-                                <label for="cliente">Cliente*</label>
-                                <input type="text" id="cliente" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="evento">Tipo de Evento*</label>
-                                <select id="evento" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="casamento">Casamento</option>
-                                    <option value="show">Show</option>
-                                    <option value="corporativo">Evento Corporativo</option>
-                                    <option value="festa">Festa Particular</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="data">Data do Evento*</label>
-                                <input type="date" id="data" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="local">Local*</label>
-                                <input type="text" id="local" required placeholder="Endereço completo">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="observacoes">Detalhes do Evento</label>
-                                <textarea id="observacoes" placeholder="Número de convidados, horários, necessidades especiais..."></textarea>
-                            </div>
-                            
-                            <h3>Equipamentos Necessários</h3>
-                            <div class="equipamentos-lista" id="lista-equipamentos">
-                                <!-- Gerado dinamicamente pelo JavaScript -->
-                            </div>
-                            
-                            <div style="margin-top: 20px; font-size: 1.2rem;">
-                                Total: R$ <span id="total-orcamento-form">0.00</span>
-                            </div>
-                            
-                            <button type="submit" class="btn">GERAR ORÇAMENTO</button>
-                        </form>
+<div id="orcamentos" class="page">
+    <div class="page-header">
+        <h2 id="currentPageTitle">Orçamentos</h2>
+    </div>
+    
+    <div class="container-orcamentos">
+        <!-- Botão para abrir formulário -->
+        <div class="header-orcamentos">
+            <button id="btn-novo-orcamento" class="btn-primary">
+                ➕ Novo Orçamento
+            </button>
+            
+            <div class="controles-orcamento">
+                <span class="total-orcamentos">
+                    📋 Total: <strong id="contador-orcamentos">0</strong> orçamentos
+                </span>
+            </div>
+        </div>
+
+        <!-- Formulário (inicialmente escondido) -->
+        <div id="form-container-orcamento" class="form-container-orcamento" style="display: none;">
+            <div class="form-header">
+                <h3>📝 Criar Novo Orçamento</h3>
+                <button id="btn-fechar-form" class="btn-fechar">×</button>
+            </div>
+            
+            <form id="form-orcamento" class="form-orcamento">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>👤 Cliente</label>
+                        <input type="text" id="cliente" name="cliente" required>
                     </div>
                     
-                    <div class="lista-orcamentos-container">
-                        <div class="lista-header">
-                            <h2>Orçamentos Existentes</h2>
-                            <div class="filtros">
-                                <select id="filtro-status">
-                                    <option value="">Todos os Status</option>
-                                    <option value="pendente">Pendente</option>
-                                    <option value="aprovado">Aprovado</option>
-                                    <option value="recusado">Recusado</option>
-                                </select>
-                                
-                                <input type="text" id="busca-orcamento" placeholder="Pesquisar orçamento...">
-                            </div>
-                        </div>
-                        
-                        <div id="lista-orcamentos">
-                            <!-- Orçamentos serão carregados aqui -->
-                        </div>
+                    <div class="input-group">
+                        <label>🎯 Tipo de Evento</label>
+                        <select id="evento" name="evento" required>
+                            <option value="">Selecione...</option>
+                            <option value="casamento">Casamento</option>
+                            <option value="aniversario">Aniversário</option>
+                            <option value="corporativo">Evento Corporativo</option>
+                            <option value="formatura">Formatura</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>📅 Data do Evento</label>
+                        <input type="date" id="data" name="data" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>📍 Local</label>
+                        <input type="text" id="local" name="local" required>
                     </div>
                 </div>
+                
+                <div class="input-group">
+                    <label>📝 Observações</label>
+                    <textarea id="observacoes" name="observacoes" rows="3" placeholder="Observações adicionais..."></textarea>
+                </div>
+
+                <!-- Lista de Equipamentos -->
+                <div class="secao-equipamentos">
+                    <h4>🎛️ Equipamentos</h4>
+                    <div id="lista-equipamentos" class="lista-equipamentos">
+                        <!-- Equipamentos serão carregados aqui -->
+                    </div>
+                    
+                    <div class="total-orcamento">
+                        <strong>Total: R$ <span id="total-orcamento-form">0.00</span></strong>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">💾 Salvar Orçamento</button>
+                    <button type="button" id="btn-cancelar" class="btn-cancelar">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Orçamentos (sempre visível) -->
+        <div class="lista-orcamentos-container">
+            <div class="filtros-orcamentos">
+                <select id="filtro-status">
+                    <option value="">Todos os status</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="aprovado">Aprovados</option>
+                    <option value="recusado">Recusados</option>
+                </select>
+                
+                <input type="text" id="busca-orcamento" placeholder="Buscar cliente...">
             </div>
+
+            <div id="lista-orcamentos" class="lista-orcamentos">
+                <!-- Orçamentos serão carregados aqui -->
+            </div>
+        </div>
+    </div>
+</div>
             
             <!-- Página de Checklists -->
             <div class="page" id="checklists">

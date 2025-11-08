@@ -953,3 +953,252 @@ html, body {
     max-width: 100vw;
     overflow-x: hidden;
 }
+
+/* Container Principal */
+.container-orcamentos {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header com Botão */
+.header-orcamentos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(40,40,40,0.6);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #AE2D68, #FF6B00);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(174, 45, 104, 0.4);
+}
+
+.controles-orcamento {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.total-orcamentos {
+    color: var(--light-gray);
+    font-size: 0.9em;
+}
+
+/* Formulário */
+.form-container-orcamento {
+    background: rgba(40,40,40,0.8);
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+.form-header {
+    background: linear-gradient(135deg, #AE2D68, #FF6B00);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-header h3 {
+    margin: 0;
+    color: white;
+}
+
+.btn-fechar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-fechar:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.form-orcamento {
+    padding: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    color: var(--light-gray);
+    font-weight: 500;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    background: rgba(30,30,30,0.8);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px;
+    color: white;
+    font-size: 0.9em;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #FF6B00;
+}
+
+/* Seção de Equipamentos */
+.secao-equipamentos {
+    margin: 25px 0;
+    padding: 20px;
+    background: rgba(30,30,30,0.6);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.secao-equipamentos h4 {
+    margin: 0 0 15px 0;
+    color: var(--primary);
+}
+
+.lista-equipamentos {
+    display: grid;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.equipamento-card {
+    background: rgba(40,40,40,0.8);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.equipamento-card h4 {
+    margin: 0 0 8px 0;
+    color: var(--light-gray);
+}
+
+.equipamento-card p {
+    margin: 2px 0;
+    font-size: 0.85em;
+    color: var(--gray);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.quantidade-container {
+    margin-top: 10px;
+    display: none;
+}
+
+.total-orcamento {
+    text-align: right;
+    padding: 15px;
+    background: rgba(255,107,0,0.1);
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 1.2em;
+}
+
+/* Ações do Formulário */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancelar {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-submit:hover,
+.btn-cancelar:hover {
+    transform: translateY(-1px);
+}
+
+/* Lista de Orçamentos */
+.lista-orcamentos-container {
+    background: rgba(40,40,40,0.6);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.filtros-orcamentos {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filtros-orcamentos select,
+.filtros-orcamentos input {
+    background: rgba(30,30,30,0.8);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: white;
+}
+
+.lista-orcamentos {
+    display: grid;
+    gap: 15px;
+}
