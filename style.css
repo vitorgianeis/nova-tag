@@ -823,20 +823,72 @@ tr:last-child td {
         align-items: flex-start;
     }
 
-    /* Tabela responsiva */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+   /* Tabela */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
-    table {
-        min-width: 600px;
-        font-size: 0.85em;
-    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(40, 40, 40, 0.6);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    min-width: 600px;
+    font-size: 0.85em;
+}
 
-    th, td {
-        padding: 8px 10px;
-    }
+th {
+    background: linear-gradient(135deg, #AE2D68, #FF6B00);
+    color: white;
+    font-weight: 600;
+    padding: 15px 12px;
+    text-align: left;
+    font-size: 0.95rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--light-gray);
+    transition: all 0.3s;
+}
+
+th, td {
+    padding: 8px 10px;
+}
+
+tr:hover {
+    background-color: rgba(255, 107, 0, 0.08);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.status-barracao {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-outro {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #FFC107;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
 
     /* Formulários responsivos */
     .form-container-orcamento,
