@@ -103,6 +103,7 @@ document.addEventListener('click', (e) => {
 });
 
 // Verificar tamanho da tela
+// MENU MOBILE FUNCIONAL - SPRINT 1
 function checkScreenSize() {
     if (window.innerWidth <= 768) {
         mobileMenuToggle.style.display = 'block';
@@ -113,8 +114,30 @@ function checkScreenSize() {
     }
 }
 
-window.addEventListener('resize', checkScreenSize);
-checkScreenSize();
+// TOGGLE DO MENU MOBILE
+mobileMenuToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    sidebar.classList.toggle('active');
+});
+
+// FECHAR MENU AO CLICAR FORA
+document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768 && 
+        !sidebar.contains(e.target) && 
+        !mobileMenuToggle.contains(e.target) &&
+        sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+    }
+});
+
+// FECHAR MENU AO CLICAR EM LINK
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+        }
+    });
+});
 
 // Funções de utilidade
 function showLoading() {
@@ -794,3 +817,62 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('eventos', JSON.stringify(eventos));
     }
 });
+
+// FUNÇÃO ATUALIZAR DASHBOARD - SPRINT 1
+function atualizarDashboard() {
+    console.log('Atualizando dashboard...');
+    
+    // 1. TOTAL DE EQUIPAMENTOS (soma todas as quantidades)
+    const totalEquipamentos = equipamentos.reduce((sum, equip) => sum + equip.quantidade, 0);
+    
+    // 2. EVENTOS ATIVOS (eventos com data futura)
+    const hoje = new Date().toISOString().split('T')[0];
+    const eventosAtivos = eventos.filter(evento => evento.data >= hoje).length;
+    
+    // 3. TOTAL DE ORÇAMENTOS
+    const totalOrcamentos = orcamentos.length;
+    
+    // 4. CHECKLISTS CONCLUÍDOS (todos equipamentos com status "pronto")
+    const totalChecklists = checklists.length;
+    const checklistsConcluidos = checklists.filter(checklist => {
+        const todosProntos = checklist.equipamentos.every(equip => equip.status === 'pronto');
+        return todosProntos;
+    }).length;
+    
+    const percentualChecklists = totalChecklists > 0 ? 
+        Math.round((checklistsConcluidos / totalChecklists) * 100) : 0;
+    
+    // ATUALIZAR INTERFACE
+    const statCards = document.querySelectorAll('.stat-card');
+    if (statCards.length === 4) {
+        statCards[0].querySelector('.stat-value').textContent = totalEquipamentos;
+        statCards[1].querySelector('.stat-value').textContent = eventosAtivos;
+        statCards[2].querySelector('.stat-value').textContent = totalOrcamentos;
+        statCards[3].querySelector('.stat-value').textContent = percentualChecklists + '%';
+    }
+    
+    console.log('Dashboard atualizado:', {
+        equipamentos: totalEquipamentos,
+        eventos: eventosAtivos,
+        orcamentos: totalOrcamentos,
+        checklists: percentualChecklists + '%'
+    });
+}
+
+// CHAMAR QUANDO DASHBOARD CARREGAR
+document.addEventListener('DOMContentLoaded', function() {
+    // Atualizar dashboard quando a página for carregada
+    if (document.getElementById('dashboard').classList.contains('active')) {
+        atualizarDashboard();
+    }
+    
+    // Atualizar também quando navegar para dashboard
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            if (this.getAttribute('data-page') === 'dashboard') {
+                setTimeout(atualizarDashboard, 100);
+            }
+        });
+    });
+});
+
