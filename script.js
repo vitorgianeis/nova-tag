@@ -957,3 +957,175 @@ document.addEventListener('DOMContentLoaded', function() {
 // TORNAR FUNÇÕES GLOBAIS PARA DEBUG
 window.checkScreenSize = checkScreenSize;
 window.inicializarMenuMobile = inicializarMenuMobile;
+
+// CRUD para Equipamentos
+function inicializarSistemaEquipamentos() {
+    carregarEquipamentos();
+    setupEventosEquipamentos();
+}
+
+function setupEventosEquipamentos() {
+    // Botão novo equipamento
+    document.getElementById('btn-novo-equipamento').addEventListener('click', () => {
+        abrirModalEquipamento();
+    });
+    
+    // Fechar modal
+    document.getElementById('btn-fechar-modal-equipamento').addEventListener('click', fecharModalEquipamento);
+    document.getElementById('btn-cancelar-equipamento').addEventListener('click', fecharModalEquipamento);
+    
+    // Formulário de equipamento
+    document.getElementById('form-equipamento').addEventListener('submit', salvarEquipamento);
+    
+    // Fechar modal ao clicar fora
+    document.getElementById('modal-equipamento').addEventListener('click', (e) => {
+        if (e.target.id === 'modal-equipamento') {
+            fecharModalEquipamento();
+        }
+    });
+}
+
+function abrirModalEquipamento(equipamento = null) {
+    const modal = document.getElementById('modal-equipamento');
+    const titulo = document.getElementById('modal-equipamento-title');
+    const form = document.getElementById('form-equipamento');
+    
+    if (equipamento) {
+        // Modo edição
+        titulo.textContent = 'Editar Equipamento';
+        document.getElementById('equipamento-id').value = equipamento.id;
+        document.getElementById('equipamento-material').value = equipamento.material;
+        document.getElementById('equipamento-quantidade').value = equipamento.quantidade;
+        document.getElementById('equipamento-categoria').value = equipamento.categoria;
+        document.getElementById('equipamento-local').value = equipamento.local;
+        document.getElementById('equipamento-observacoes').value = equipamento.observacoes;
+    } else {
+        // Modo criação
+        titulo.textContent = 'Novo Equipamento';
+        form.reset();
+        document.getElementById('equipamento-id').value = '';
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function fecharModalEquipamento() {
+    document.getElementById('modal-equipamento').style.display = 'none';
+    document.getElementById('form-equipamento').reset();
+}
+
+function salvarEquipamento(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('equipamento-id').value;
+    const material = document.getElementById('equipamento-material').value;
+    const quantidade = parseInt(document.getElementById('equipamento-quantidade').value);
+    const categoria = document.getElementById('equipamento-categoria').value;
+    const local = document.getElementById('equipamento-local').value;
+    const observacoes = document.getElementById('equipamento-observacoes').value;
+    
+    if (id) {
+        // Editar equipamento existente
+        const index = equipamentos.findIndex(eq => eq.id == id);
+        if (index !== -1) {
+            equipamentos[index] = {
+                ...equipamentos[index],
+                material,
+                quantidade,
+                categoria,
+                local,
+                observacoes
+            };
+            showToast('Equipamento atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Novo equipamento
+        const novoEquipamento = {
+            id: Date.now(),
+            material,
+            quantidade,
+            categoria,
+            local,
+            observacoes
+        };
+        equipamentos.push(novoEquipamento);
+        showToast('Equipamento adicionado com sucesso!', 'success');
+    }
+    
+    // Salvar no localStorage
+    localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
+    
+    // Atualizar interface
+    carregarEquipamentos();
+    fecharModalEquipamento();
+    
+    // Atualizar dashboard se estiver visível
+    if (document.getElementById('dashboard').classList.contains('active')) {
+        atualizarDashboard();
+    }
+}
+
+function editarEquipamento(id) {
+    const equipamento = equipamentos.find(eq => eq.id == id);
+    if (equipamento) {
+        abrirModalEquipamento(equipamento);
+    }
+}
+
+function excluirEquipamento(id) {
+    if (confirm('Tem certeza que deseja excluir este equipamento?')) {
+        const index = equipamentos.findIndex(eq => eq.id == id);
+        if (index !== -1) {
+            equipamentos.splice(index, 1);
+            localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
+            carregarEquipamentos();
+            showToast('Equipamento excluído com sucesso!', 'success');
+            
+            // Atualizar dashboard se estiver visível
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                atualizarDashboard();
+            }
+        }
+    }
+}
+
+function carregarEquipamentos() {
+    const tabela = document.querySelector('#tabela-equipamentos tbody');
+    if (!tabela) return;
+    
+    tabela.innerHTML = '';
+    
+    equipamentos.forEach(equip => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${equip.material}</td>
+            <td>${equip.quantidade}</td>
+            <td>${formatarCategoria(equip.categoria)}</td>
+            <td><span class="status-${equip.local}">${formatarLocal(equip.local)}</span></td>
+            <td>${equip.observacoes}</td>
+            <td>
+                <div class="btn-acoes">
+                    <button class="btn-editar" onclick="editarEquipamento(${equip.id})">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn-excluir" onclick="excluirEquipamento(${equip.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            </td>
+        `;
+        tabela.appendChild(tr);
+    });
+}
+
+function formatarCategoria(categoria) {
+    const categorias = {
+        'estrutura': 'Estruturas',
+        'iluminacao': 'Iluminação',
+        'som': 'Sonorização',
+        'projecao': 'Projeção',
+        'controle': 'Controles',
+        'acessorio': 'Acessórios'
+    };
+    return categorias[categoria] || categoria;
+}
