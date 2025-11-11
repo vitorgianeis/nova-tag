@@ -82,43 +82,104 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-// Menu Mobile
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const sidebar = document.querySelector('.sidebar');
 
-if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
-}
-
-// Fechar menu ao clicar fora (mobile)
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768 && 
-        !sidebar.contains(e.target) && 
-        !mobileMenuToggle.contains(e.target) &&
-        sidebar.classList.contains('active')) {
-        sidebar.classList.remove('active');
-    }
-});
 
 // Verificar tamanho da tela
-// MENU MOBILE FUNCIONAL - SPRINT 1
+// =============================================
+// SISTEMA DE MENU MOBILE - CORRIGIDO
+// =============================================
+
+// Elementos do menu
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const sidebar = document.querySelector('.sidebar');
+const navLinks = document.querySelectorAll('.nav-link');
+
+// Verificar tamanho da tela - CORRIGIDA
 function checkScreenSize() {
+    console.log('📱 Verificando tamanho da tela:', window.innerWidth);
+    
     if (window.innerWidth <= 768) {
-        mobileMenuToggle.style.display = 'block';
-        sidebar.classList.remove('active');
+        // MODO MOBILE
+        if (mobileMenuToggle) {
+            mobileMenuToggle.style.display = 'block';
+            console.log('✅ Botão mobile visível');
+        }
+        if (sidebar) {
+            sidebar.classList.remove('active');
+            console.log('✅ Sidebar fechada no mobile');
+        }
     } else {
-        mobileMenuToggle.style.display = 'none';
-        sidebar.classList.add('active');
+        // MODO DESKTOP
+        if (mobileMenuToggle) {
+            mobileMenuToggle.style.display = 'none';
+            console.log('✅ Botão mobile oculto');
+        }
+        if (sidebar) {
+            sidebar.classList.add('active');
+            console.log('✅ Sidebar aberta no desktop');
+        }
     }
 }
 
-// TOGGLE DO MENU MOBILE
-mobileMenuToggle.addEventListener('click', function(e) {
-    e.stopPropagation();
-    sidebar.classList.toggle('active');
-});
+// Toggle do menu mobile - CORRIGIDA
+function setupMobileMenu() {
+    console.log('🔄 Configurando menu mobile...');
+    
+    // TOGGLE BUTTON
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🎯 Toggle button clicado');
+            sidebar.classList.toggle('active');
+            console.log('📱 Sidebar estado:', sidebar.classList.contains('active') ? 'ABERTO' : 'FECHADO');
+        });
+    } else {
+        console.error('❌ Botão mobile não encontrado!');
+    }
+    
+    // FECHAR MENU AO CLICAR EM LINKS - CORRIGIDO
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            console.log('🔗 Link clicado:', this.getAttribute('data-page'));
+            
+            if (window.innerWidth <= 768) {
+                console.log('📱 Fechando menu mobile após clique no link');
+                sidebar.classList.remove('active');
+            }
+            
+            // Navegação normal continua funcionando
+        });
+    });
+    
+    // FECHAR MENU AO CLICAR FORA - CORRIGIDO
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768 && 
+            sidebar.classList.contains('active') &&
+            !sidebar.contains(e.target) && 
+            !mobileMenuToggle.contains(e.target)) {
+            
+            console.log('📱 Fechando menu mobile (clique fora)');
+            sidebar.classList.remove('active');
+        }
+    });
+    
+    // IMPEDIR PROPAGAÇÃO NO SIDEBAR
+    if (sidebar) {
+        sidebar.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+    console.log('✅ Menu mobile configurado');
+}
+
+// Inicializar menu mobile
+function inicializarMenuMobile() {
+    console.log('🚀 Inicializando menu mobile...');
+    checkScreenSize();
+    setupMobileMenu();
+}
 
 // FECHAR MENU AO CLICAR FORA
 document.addEventListener('click', function(e) {
@@ -875,4 +936,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+// INICIALIZAÇÃO COMPLETA - COM MENU MOBILE
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando sistema Tag Som e Luz...');
+    
+    // Inicializar componentes NA ORDEM CORRETA
+    inicializarMenuMobile();  // PRIMEIRO - Menu mobile
+    inicializarSistemaEquipamentos();
+    inicializarDashboard();
+    
+    // Configurar redimensionamento
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Forçar verificação inicial
+    setTimeout(checkScreenSize, 100);
+    
+    console.log('✅ Sistema totalmente inicializado');
+});
 
+// TORNAR FUNÇÕES GLOBAIS PARA DEBUG
+window.checkScreenSize = checkScreenSize;
+window.inicializarMenuMobile = inicializarMenuMobile;
