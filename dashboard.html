@@ -82,21 +82,39 @@
             <!-- Dashboard Content -->
             <div class="dashboard-content">
                 <div class="dashboard-stats">
+                    <!-- Card de Equipamentos Melhorado -->
                     <div class="stat-card">
-                        <i class="fas fa-boxes fa-2x"></i>
-                        <div class="stat-value" id="total-equipamentos">0</div>
-                        <div class="stat-label">Equipamentos</div>
+                        <div class="stat-card-header">
+                            <i class="fas fa-boxes fa-2x"></i>
+                            <div class="stat-card-titles">
+                                <div class="stat-value" id="total-tipos-equipamentos">0</div>
+                                <div class="stat-label">Tipos de Equipamentos</div>
+                            </div>
+                        </div>
+                        <div class="stat-card-divider"></div>
+                        <div class="stat-card-footer">
+                            <div class="stat-unidades">
+                                <i class="fas fa-layer-group"></i>
+                                <span id="total-unidades-equipamentos">0</span> unidades totais
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- Card de Eventos -->
                     <div class="stat-card">
                         <i class="fas fa-calendar-check fa-2x"></i>
                         <div class="stat-value" id="total-eventos">0</div>
                         <div class="stat-label">Eventos Ativos</div>
                     </div>
+                    
+                    <!-- Card de Orçamentos -->
                     <div class="stat-card">
                         <i class="fas fa-file-invoice-dollar fa-2x"></i>
                         <div class="stat-value" id="total-orcamentos">0</div>
                         <div class="stat-label">Orçamentos</div>
                     </div>
+                    
+                    <!-- Card de Checklists -->
                     <div class="stat-card">
                         <i class="fas fa-check-circle fa-2x"></i>
                         <div class="stat-value" id="percentual-checklists">0%</div>

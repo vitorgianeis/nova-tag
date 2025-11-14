@@ -1147,17 +1147,23 @@ function carregarListaEventos() {
 // =============================================
 
 function atualizarDashboard() {
-    // Total de equipamentos (soma todas as quantidades)
-    const totalEquipamentos = equipamentos.reduce((sum, equip) => sum + equip.quantidade, 0);
+    console.log('📊 Atualizando dashboard...');
     
-    // Eventos ativos (eventos com data futura)
-    const hoje = new Date().toISOString().split('T')[0];
-    const eventosAtivos = eventos.filter(evento => evento.data >= hoje).length;
+    // ✅ CONTAGEM CORRETA DE EQUIPAMENTOS
+    const totalTiposEquipamentos = equipamentos.length;
+    const totalUnidadesEquipamentos = equipamentos.reduce((sum, equip) => sum + equip.quantidade, 0);
     
-    // Total de orçamentos
+    // ✅ EVENTOS ATIVOS (com data futura)
+    const hoje = new Date();
+    const eventosAtivos = eventos.filter(evento => {
+        const dataEvento = new Date(evento.data);
+        return dataEvento >= hoje;
+    }).length;
+    
+    // ✅ TOTAL DE ORÇAMENTOS
     const totalOrcamentos = orcamentos.length;
     
-    // Checklists concluídos (todos equipamentos com status "pronto")
+    // ✅ CHECKLISTS CONCLUÍDOS
     const totalChecklists = checklists.length;
     const checklistsConcluidos = checklists.filter(checklist => {
         const todosProntos = checklist.equipamentos.every(equip => equip.status === 'pronto');
@@ -1167,16 +1173,77 @@ function atualizarDashboard() {
     const percentualChecklists = totalChecklists > 0 ? 
         Math.round((checklistsConcluidos / totalChecklists) * 100) : 0;
     
-    // Atualizar interface
-    const totalEquipamentosElement = document.getElementById('total-equipamentos');
+    // ✅ ATUALIZAR INTERFACE - TODOS OS CARDS
+    const totalTiposElement = document.getElementById('total-tipos-equipamentos');
+    const totalUnidadesElement = document.getElementById('total-unidades-equipamentos');
     const totalEventosElement = document.getElementById('total-eventos');
     const totalOrcamentosElement = document.getElementById('total-orcamentos');
     const percentualChecklistsElement = document.getElementById('percentual-checklists');
     
-    if (totalEquipamentosElement) totalEquipamentosElement.textContent = totalEquipamentos;
-    if (totalEventosElement) totalEventosElement.textContent = eventosAtivos;
-    if (totalOrcamentosElement) totalOrcamentosElement.textContent = totalOrcamentos;
-    if (percentualChecklistsElement) percentualChecklistsElement.textContent = percentualChecklists + '%';
+    // Atualizar cada card se o elemento existir
+    if (totalTiposElement) {
+        totalTiposElement.textContent = totalTiposEquipamentos;
+    }
+    
+    if (totalUnidadesElement) {
+        totalUnidadesElement.textContent = totalUnidadesEquipamentos;
+    }
+    
+    if (totalEventosElement) {
+        totalEventosElement.textContent = eventosAtivos;
+    }
+    
+    if (totalOrcamentosElement) {
+        totalOrcamentosElement.textContent = totalOrcamentos;
+    }
+    
+    if (percentualChecklistsElement) {
+        percentualChecklistsElement.textContent = percentualChecklists + '%';
+    }
+    
+    console.log('✅ Dashboard atualizado:', {
+        tipos_equipamentos: totalTiposEquipamentos,
+        unidades_equipamentos: totalUnidadesEquipamentos,
+        eventos: eventosAtivos,
+        orcamentos: totalOrcamentos,
+        checklists: percentualChecklists + '%'
+    });
+}
+
+function carregarProximosEventos() {
+    const container = document.getElementById('lista-proximos-eventos');
+    if (!container) return;
+    
+    const hoje = new Date();
+    const eventosFuturos = eventos.filter(evento => {
+        const dataEvento = new Date(evento.data);
+        return dataEvento >= hoje;
+    }).slice(0, 5); // Mostrar apenas os próximos 5 eventos
+    
+    container.innerHTML = '';
+    
+    if (eventosFuturos.length === 0) {
+        container.innerHTML = `
+            <div class="evento-item" style="text-align: center; color: var(--gray);">
+                <i class="fas fa-calendar-times fa-2x" style="margin-bottom: 10px;"></i>
+                <p>Nenhum evento agendado</p>
+            </div>
+        `;
+        return;
+    }
+    
+    eventosFuturos.forEach(evento => {
+        const div = document.createElement('div');
+        div.className = 'evento-item';
+        div.innerHTML = `
+            <h4>${evento.cliente}</h4>
+            <p><strong>Data:</strong> ${formatarData(evento.data)}</p>
+            <p><strong>Local:</strong> ${evento.local}</p>
+            <p><strong>Tipo:</strong> ${evento.tipoEvento}</p>
+            ${evento.observacoes ? `<p><strong>Observações:</strong> ${evento.observacoes}</p>` : ''}
+        `;
+        container.appendChild(div);
+    });
 }
 
 // =============================================

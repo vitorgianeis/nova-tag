@@ -212,6 +212,9 @@ body {
     min-height: 100vh;
 }
 
+
+
+
 /* Mobile Menu */
 .mobile-menu-toggle {
     display: none;
@@ -385,6 +388,184 @@ body {
 }
 
 /* Dashboard */
+/* ============================================= */
+/* CARD DE EQUIPAMENTOS NO NOVO PADRÃO */
+/* ============================================= */
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    border-left: 4px solid var(--primary);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px; /* Um pouco mais alto para acomodar o footer */
+    justify-content: space-between;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Parte superior do card (ícone, valor e label) */
+.stat-card i {
+    margin-bottom: 10px;
+    color: var(--primary);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #AE2D68, #FF9E00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 10px 0;
+}
+
+.stat-label {
+    color: var(--gray);
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+/* Divisória */
+.stat-card-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+    width: 100%;
+}
+
+/* Footer com unidades */
+.stat-card-footer {
+    margin-top: auto;
+}
+
+.stat-unidades {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(76, 175, 80, 0.15);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #4CAF50;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.stat-unidades i {
+    font-size: 0.8rem;
+    margin: 0;
+    color: #4CAF50;
+}
+
+/* Cores diferentes para cada card */
+.stat-card:nth-child(1) {
+    border-left-color: #4CAF50; /* Verde para equipamentos */
+}
+
+.stat-card:nth-child(2) {
+    border-left-color: #2196F3; /* Azul para eventos */
+}
+
+.stat-card:nth-child(3) {
+    border-left-color: #FF9800; /* Laranja para orçamentos */
+}
+
+.stat-card:nth-child(4) {
+    border-left-color: #9C27B0; /* Roxo para checklists */
+}
+
+/* Seção de eventos recentes */
+.recent-section {
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 107, 0, 0.2);
+}
+
+.recent-section h3 {
+    margin-bottom: 20px;
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+.eventos-lista {
+    display: grid;
+    gap: 15px;
+}
+
+.evento-item {
+    background: rgba(40, 40, 40, 0.8);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    transition: all 0.3s;
+}
+
+.evento-item:hover {
+    background: rgba(50, 50, 50, 0.8);
+    transform: translateX(5px);
+}
+
+.evento-item h4 {
+    margin: 0 0 8px 0;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.evento-item p {
+    margin: 4px 0;
+    color: var(--light-gray);
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        min-height: 180px;
+        padding: 20px;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-value {
+        font-size: 1.8rem;
+    }
+    
+    .stat-unidades {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}
+
 .dashboard-content {
     padding: 20px 0;
 }
@@ -766,6 +947,171 @@ tr:last-child td {
 }
 
 /* Orçamentos */
+/* ============================================= */
+/* ESTILOS PARA O CRUD DE ORÇAMENTOS */
+/* ============================================= */
+
+/* Ações dos orçamentos */
+.orcamento-acoes {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-acao {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-editar {
+    background: #2196F3;
+    color: white;
+}
+
+.btn-excluir {
+    background: #F44336;
+    color: white;
+}
+
+.btn-aprovar {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-rejeitar {
+    background: #FF9800;
+    color: white;
+}
+
+.btn-detalhes {
+    background: #9C27B0;
+    color: white;
+}
+
+.btn-acao:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+/* Status dos orçamentos */
+.status-pendente {
+    background: rgba(255, 193, 7, 0.15);
+    color: #FFC107;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-aprovado {
+    background: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-recusado {
+    background: rgba(244, 67, 54, 0.15);
+    color: #F44336;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Lista de equipamentos no modal */
+.lista-equipamentos {
+    display: grid;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(40,40,40,0.6);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.equipamento-orcamento-card {
+    background: rgba(50,50,50,0.8);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s;
+}
+
+.equipamento-orcamento-card:hover {
+    background: rgba(60,60,60,0.8);
+    transform: translateX(5px);
+}
+
+.equipamento-orcamento-card h4 {
+    margin: 0 0 8px 0;
+    color: var(--light-gray);
+    font-size: 1rem;
+}
+
+.equipamento-orcamento-card p {
+    margin: 2px 0;
+    font-size: 0.85em;
+    color: var(--gray);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.quantidade-container {
+    margin-top: 10px;
+    display: none;
+}
+
+.quantidade-container label {
+    font-size: 0.9em;
+    color: var(--light-gray);
+}
+
+.total-orcamento {
+    text-align: right;
+    padding: 15px;
+    background: rgba(255,107,0,0.1);
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 1.2em;
+    border: 1px solid rgba(255,107,0,0.3);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .orcamento-acoes {
+        flex-direction: column;
+    }
+    
+    .btn-acao {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .lista-equipamentos {
+        max-height: 300px;
+    }
+}
+
 .container-orcamentos {
     max-width: 1200px;
     margin: 0 auto;
@@ -1261,4 +1607,358 @@ html, body {
         width: 100% !important;
         min-height: 100vh !important;
     }
+}
+
+
+/* ============================================= */
+/* CORREÇÕES DO MODAL DE ORÇAMENTOS */
+/* ============================================= */
+
+/* Modal de Orçamento */
+#modal-orcamento {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#modal-orcamento .modal-content {
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 107, 0, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+#modal-orcamento .modal-header {
+    background: linear-gradient(135deg, #AE2D68, #FF6B00);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px 12px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#modal-orcamento .modal-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#modal-orcamento .btn-fechar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+#modal-orcamento .btn-fechar:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* Formulário do Modal */
+#form-orcamento {
+    padding: 25px;
+}
+
+#form-orcamento .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+#form-orcamento .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+#form-orcamento .input-group label {
+    margin-bottom: 8px;
+    color: var(--light-gray);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+#form-orcamento .input-group input,
+#form-orcamento .input-group select,
+#form-orcamento .input-group textarea {
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+#form-orcamento .input-group input:focus,
+#form-orcamento .input-group select:focus,
+#form-orcamento .input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(50, 50, 50, 0.8);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
+}
+
+#form-orcamento textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Seção de Equipamentos */
+.secao-equipamentos {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(40, 40, 40, 0.6);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.secao-equipamentos h4 {
+    margin: 0 0 20px 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Lista de Equipamentos */
+.lista-equipamentos {
+    display: grid;
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    margin: 15px 0;
+}
+
+.equipamento-orcamento-card {
+    background: rgba(50, 50, 50, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+}
+
+.equipamento-orcamento-card:hover {
+    background: rgba(60, 60, 60, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.equipamento-orcamento-card h4 {
+    margin: 0 0 10px 0;
+    color: var(--light-gray);
+    font-size: 1.1rem;
+}
+
+.equipamento-orcamento-card p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Checkbox e Quantidade */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    margin: 0;
+    color: var(--light-gray);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.quantidade-container {
+    margin-top: 12px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 107, 0, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 107, 0, 0.2);
+}
+
+.quantidade-container label {
+    margin: 0;
+    color: var(--light-gray);
+    font-size: 0.9rem;
+}
+
+.quantidade-container input {
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: white;
+    width: 80px;
+}
+
+/* Total do Orçamento */
+.total-orcamento {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 107, 0, 0.15);
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 1.3em;
+    border: 2px solid rgba(255, 107, 0, 0.3);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Ações do Formulário */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-cancelar {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover,
+.btn-cancelar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsividade do Modal */
+@media (max-width: 768px) {
+    #modal-orcamento {
+        padding: 10px;
+    }
+    
+    #modal-orcamento .modal-content {
+        max-height: 95vh;
+    }
+    
+    #form-orcamento {
+        padding: 15px;
+    }
+    
+    #form-orcamento .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .secao-equipamentos {
+        padding: 15px;
+        margin: 20px 0;
+    }
+    
+    .lista-equipamentos {
+        max-height: 300px;
+    }
+    
+    .equipamento-orcamento-card {
+        padding: 15px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-submit,
+    .btn-cancelar {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Scrollbar personalizada */
+.lista-equipamentos::-webkit-scrollbar {
+    width: 8px;
+}
+
+.lista-equipamentos::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.lista-equipamentos::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.lista-equipamentos::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary);
 }

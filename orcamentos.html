@@ -80,73 +80,82 @@
             <div class="container-orcamentos">
                 <div class="header-orcamentos">
                     <button id="btn-novo-orcamento" class="btn-primary">
-                        ➕ Novo Orçamento
+                        <i class="fas fa-plus"></i> Novo Orçamento
                     </button>
                     
                     <div class="controles-orcamento">
                         <span class="total-orcamentos">
-                            📋 Total: <strong id="contador-orcamentos">0</strong> orçamentos
+                            <i class="fas fa-file-invoice"></i> Total: <strong id="contador-orcamentos">0</strong> orçamentos
                         </span>
                     </div>
                 </div>
 
-                <div id="form-container-orcamento" class="form-container-orcamento" style="display: none;">
-                    <div class="form-header">
-                        <h3>📝 Criar Novo Orçamento</h3>
-                        <button id="btn-fechar-form" class="btn-fechar">×</button>
-                    </div>
-                    
-                    <form id="form-orcamento" class="form-orcamento">
-                        <div class="form-grid">
-                            <div class="input-group">
-                                <label>👤 Cliente</label>
-                                <input type="text" id="cliente" name="cliente" required>
-                            </div>
-                            
-                            <div class="input-group">
-                                <label>🎯 Tipo de Evento</label>
-                                <select id="evento" name="evento" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="casamento">Casamento</option>
-                                    <option value="aniversario">Aniversário</option>
-                                    <option value="corporativo">Evento Corporativo</option>
-                                    <option value="formatura">Formatura</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
-                            
-                            <div class="input-group">
-                                <label>📅 Data do Evento</label>
-                                <input type="date" id="data" name="data" required>
-                            </div>
-                            
-                            <div class="input-group">
-                                <label>📍 Local</label>
-                                <input type="text" id="local" name="local" required>
-                            </div>
+                <!-- Modal de Orçamento -->
+                <div id="modal-orcamento" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modal-orcamento-title"><i class="fas fa-file-invoice-dollar"></i> Novo Orçamento</h3>
+                            <button class="btn-fechar" id="btn-fechar-modal-orcamento">×</button>
                         </div>
                         
-                        <div class="input-group">
-                            <label>📝 Observações</label>
-                            <textarea id="observacoes" name="observacoes" rows="3" placeholder="Observações adicionais..."></textarea>
-                        </div>
-
-                        <div class="secao-equipamentos">
-                            <h4>🎛️ Equipamentos</h4>
-                            <div id="lista-equipamentos" class="lista-equipamentos">
-                                <!-- Equipamentos serão carregados aqui -->
+                        <form id="form-orcamento">
+                            <input type="hidden" id="orcamento-id">
+                            
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label><i class="fas fa-user"></i> Cliente</label>
+                                    <input type="text" id="orcamento-cliente" required>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Tipo de Evento</label>
+                                    <select id="orcamento-evento" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="casamento">Casamento</option>
+                                        <option value="aniversario">Aniversário</option>
+                                        <option value="corporativo">Evento Corporativo</option>
+                                        <option value="formatura">Formatura</option>
+                                        <option value="outro">Outro</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label><i class="fas fa-calendar-day"></i> Data do Evento</label>
+                                    <input type="date" id="orcamento-data" required>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label><i class="fas fa-map-marker-alt"></i> Local</label>
+                                    <input type="text" id="orcamento-local" required>
+                                </div>
                             </div>
                             
-                            <div class="total-orcamento">
-                                <strong>Total: R$ <span id="total-orcamento-form">0.00</span></strong>
+                            <div class="input-group">
+                                <label><i class="fas fa-sticky-note"></i> Observações</label>
+                                <textarea id="orcamento-observacoes" rows="3" placeholder="Observações adicionais..."></textarea>
                             </div>
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="btn-submit">💾 Salvar Orçamento</button>
-                            <button type="button" id="btn-cancelar" class="btn-cancelar">❌ Cancelar</button>
-                        </div>
-                    </form>
+                            <div class="secao-equipamentos">
+                                <h4><i class="fas fa-boxes"></i> Equipamentos do Orçamento</h4>
+                                <div id="lista-equipamentos-orcamento" class="lista-equipamentos">
+                                    <!-- Equipamentos serão carregados aqui -->
+                                </div>
+                                
+                                <div class="total-orcamento">
+                                    <strong>Total: R$ <span id="total-orcamento-form">0.00</span></strong>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-submit">
+                                    <i class="fas fa-save"></i> Salvar Orçamento
+                                </button>
+                                <button type="button" class="btn-cancelar" id="btn-cancelar-orcamento">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="lista-orcamentos-container">
@@ -181,7 +190,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             carregarOrcamentos();
-            carregarEquipamentosOrcamento();
+            inicializarSistemaOrcamentos();
         });
     </script>
 </body>
