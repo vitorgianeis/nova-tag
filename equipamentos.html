@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipamentos - Tag Som e Luz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h1>Tag</h1>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="equipamentos.html" class="nav-link active">
+                        <i class="fas fa-boxes"></i>
+                        <span>Equipamentos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="orcamentos.html" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Orçamentos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="checklists.html" class="nav-link">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Checklists</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="eventos.html" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Eventos Agendados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="agendamento.html" class="nav-link">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Agendamento</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="topbar">
+                <div class="page-title">Equipamentos</div>
+                <div class="user-info">
+                    <div class="user-avatar">TAG</div>
+                    <div class="user-name" id="current-user">Usuário</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Conteúdo Equipamentos -->
+            <div class="equipamentos-container">
+                <h1><i class="fas fa-boxes"></i> Controle de Equipamentos</h1>
+                
+                <div class="header-actions">
+                    <button id="btn-novo-equipamento" class="btn-primary">
+                        <i class="fas fa-plus"></i> Novo Equipamento
+                    </button>
+                </div>
+                
+                <!-- Modal Equipamento -->
+                <div id="modal-equipamento" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modal-equipamento-title">Novo Equipamento</h3>
+                            <button class="btn-fechar" id="btn-fechar-modal-equipamento">×</button>
+                        </div>
+                        <form id="form-equipamento">
+                            <input type="hidden" id="equipamento-id">
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label>Nome do Material</label>
+                                    <input type="text" id="equipamento-material" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Quantidade</label>
+                                    <input type="number" id="equipamento-quantidade" min="0" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Categoria</label>
+                                    <select id="equipamento-categoria" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="estrutura">Estruturas</option>
+                                        <option value="iluminacao">Iluminação</option>
+                                        <option value="som">Sonorização</option>
+                                        <option value="projecao">Projeção</option>
+                                        <option value="controle">Controles</option>
+                                        <option value="acessorio">Acessórios</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Local</label>
+                                    <select id="equipamento-local" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="barracao">Barracão</option>
+                                        <option value="silene">Silene</option>
+                                        <option value="san-carlo">San Carlo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Observações</label>
+                                <textarea id="equipamento-observacoes" rows="3"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-submit">Salvar Equipamento</button>
+                                <button type="button" class="btn-cancelar" id="btn-cancelar-equipamento">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filtros">
+                    <select id="filtro-categoria">
+                        <option value="">Todas Categorias</option>
+                        <option value="estrutura">Estruturas</option>
+                        <option value="iluminacao">Iluminação</option>
+                        <option value="som">Sonorização</option>
+                        <option value="projecao">Projeção</option>
+                        <option value="controle">Controles</option>
+                        <option value="acessorio">Acessórios</option>
+                    </select>
+                    
+                    <select id="filtro-local">
+                        <option value="">Todos Locais</option>
+                        <option value="barracao">Barracão</option>
+                        <option value="silene">Silene</option>
+                        <option value="san-carlo">San Carlo</option>
+                    </select>
+                    
+                    <input type="text" id="busca" placeholder="Pesquisar equipamento...">
+                </div>
+                
+                <!-- Tabela -->
+                <div class="table-responsive">
+                    <table id="tabela-equipamentos">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Quantidade</th>
+                                <th>Categoria</th>
+                                <th>Local</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="assets/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarSistemaEquipamentos();
+            carregarEquipamentos();
+        });
+    </script>
+</body>
+</html>

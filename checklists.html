@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklists - Tag Som e Luz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h1>Tag</h1>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="equipamentos.html" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Equipamentos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="orcamentos.html" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Orçamentos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="checklists.html" class="nav-link active">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Checklists</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="eventos.html" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Eventos Agendados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="agendamento.html" class="nav-link">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Agendamento</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="topbar">
+                <div class="page-title">Checklists</div>
+                <div class="user-info">
+                    <div class="user-avatar">TAG</div>
+                    <div class="user-name" id="current-user">Usuário</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Conteúdo Checklists -->
+            <div class="eventos-container">
+                <h1><i class="fas fa-clipboard-check"></i> Checklists Operacionais</h1>
+                
+                <div class="form-group">
+                    <label for="selecionar-evento">Selecione o Evento:</label>
+                    <select id="selecionar-evento" class="form-control">
+                        <option value="">Carregando eventos...</option>
+                    </select>
+                </div>
+                
+                <div id="detalhes-evento" style="display: none;">
+                    <h3>Informações do Evento</h3>
+                    <p><strong>Cliente:</strong> <span id="checklist-cliente"></span></p>
+                    <p><strong>Data:</strong> <span id="checklist-data"></span></p>
+                    <p><strong>Local:</strong> <span id="checklist-local"></span></p>
+                    
+                    <h3 style="margin-top: 30px;">Checklist de Equipamentos</h3>
+                    <div id="checklist-equipamentos">
+                        <!-- Gerado dinamicamente -->
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label for="responsavel">Responsável pela Montagem:</label>
+                        <input type="text" id="responsavel" placeholder="Nome do funcionário">
+                    </div>
+                    
+                    <button id="btn-salvar-checklist" class="btn-submit">
+                        💾 Salvar Checklist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="assets/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarEventosChecklist();
+        });
+    </script>
+</body>
+</html>
