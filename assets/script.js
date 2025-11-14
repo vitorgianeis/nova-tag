@@ -497,34 +497,145 @@ function aplicarFiltrosEquipamentos() {
 // SISTEMA DE ORÇAMENTOS
 // =============================================
 
-function carregarEquipamentosOrcamento() {
-    const container = document.getElementById('lista-equipamentos');
+// =============================================
+// SISTEMA DE ORÇAMENTOS - CRUD COMPLETO
+// =============================================
+
+function inicializarSistemaOrcamentos() {
+    console.log('💰 Inicializando sistema de orçamentos...');
+    
+    // Botão novo orçamento
+    const btnNovo = document.getElementById('btn-novo-orcamento');
+    if (btnNovo) {
+        btnNovo.addEventListener('click', () => {
+            abrirModalOrcamento();
+        });
+    }
+    
+    // Fechar modal
+    const btnFechar = document.getElementById('btn-fechar-modal-orcamento');
+    if (btnFechar) {
+        btnFechar.addEventListener('click', fecharModalOrcamento);
+    }
+    
+    const btnCancelar = document.getElementById('btn-cancelar-orcamento');
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', fecharModalOrcamento);
+    }
+    
+    // Formulário de orçamento
+    const formOrcamento = document.getElementById('form-orcamento');
+    if (formOrcamento) {
+        formOrcamento.addEventListener('submit', salvarOrcamento);
+    }
+    
+    // Fechar modal ao clicar fora
+    const modal = document.getElementById('modal-orcamento');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target.id === 'modal-orcamento') {
+                fecharModalOrcamento();
+            }
+        });
+    }
+    
+    // Filtros
+    const filtroStatus = document.getElementById('filtro-status');
+    const buscaOrcamento = document.getElementById('busca-orcamento');
+    
+    if (filtroStatus) filtroStatus.addEventListener('change', aplicarFiltrosOrcamentos);
+    if (buscaOrcamento) buscaOrcamento.addEventListener('input', aplicarFiltrosOrcamentos);
+    
+    console.log('✅ Sistema de orçamentos inicializado');
+}
+
+function abrirModalOrcamento(orcamento = null) {
+    const modal = document.getElementById('modal-orcamento');
+    const titulo = document.getElementById('modal-orcamento-title');
+    const form = document.getElementById('form-orcamento');
+    
+    if (orcamento) {
+        // Modo edição
+        titulo.innerHTML = '<i class="fas fa-edit"></i> Editar Orçamento';
+        document.getElementById('orcamento-id').value = orcamento.id;
+        document.getElementById('orcamento-cliente').value = orcamento.cliente;
+        document.getElementById('orcamento-evento').value = orcamento.tipoEvento;
+        document.getElementById('orcamento-data').value = orcamento.data;
+        document.getElementById('orcamento-local').value = orcamento.local;
+        document.getElementById('orcamento-observacoes').value = orcamento.observacoes || '';
+        
+        // Carregar equipamentos selecionados
+        setTimeout(() => {
+            carregarEquipamentosOrcamento(orcamento.equipamentos);
+        }, 100);
+    } else {
+        // Modo criação
+        titulo.innerHTML = '<i class="fas fa-file-invoice-dollar"></i> Novo Orçamento';
+        form.reset();
+        document.getElementById('orcamento-id').value = '';
+        document.getElementById('total-orcamento-form').textContent = '0.00';
+        
+        // Carregar equipamentos vazios
+        setTimeout(() => {
+            carregarEquipamentosOrcamento([]);
+        }, 100);
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function fecharModalOrcamento() {
+    const modal = document.getElementById('modal-orcamento');
+    const form = document.getElementById('form-orcamento');
+    
+    if (modal) modal.style.display = 'none';
+    if (form) form.reset();
+    document.getElementById('total-orcamento-form').textContent = '0.00';
+}
+
+function carregarEquipamentosOrcamento(equipamentosSelecionados = []) {
+    const container = document.getElementById('lista-equipamentos-orcamento');
     if (!container) return;
     
     container.innerHTML = '';
     
     equipamentos.forEach(equip => {
+        const equipamentoSelecionado = equipamentosSelecionados.find(e => e.id === equip.id);
+        const selecionado = !!equipamentoSelecionado;
+        const quantidade = selecionado ? equipamentoSelecionado.quantidade : 1;
+        
         const div = document.createElement('div');
-        div.className = 'equipamento-card';
+        div.className = 'equipamento-orcamento-card';
         div.innerHTML = `
             <h4>${equip.material}</h4>
-            <p>Disponível: ${equip.quantidade} unidades</p>
-            <p>Local: ${formatarLocal(equip.local)}</p>
+            <p><i class="fas fa-layer-group"></i> Disponível: ${equip.quantidade} unidades</p>
+            <p><i class="fas fa-map-marker-alt"></i> Local: ${formatarLocal(equip.local)}</p>
+            <p><i class="fas fa-tag"></i> Categoria: ${formatarCategoria(equip.categoria)}</p>
+            
             <div class="checkbox-container">
-                <input type="checkbox" id="equip-${equip.id}" data-id="${equip.id}" data-nome="${equip.material}" data-valor="${calcularValorEquipamento(equip)}">
-                <label for="equip-${equip.id}">Incluir no orçamento</label>
+                <input type="checkbox" id="equip-orc-${equip.id}" 
+                       data-id="${equip.id}" 
+                       data-nome="${equip.material}" 
+                       data-valor="${calcularValorEquipamento(equip)}"
+                       ${selecionado ? 'checked' : ''}>
+                <label for="equip-orc-${equip.id}">Incluir no orçamento</label>
             </div>
-            <div class="quantidade-container" style="display: none; margin-top: 10px;">
+            
+            <div class="quantidade-container" style="display: ${selecionado ? 'block' : 'none'}; margin-top: 10px;">
                 <label>Quantidade:</label>
-                <input type="number" min="1" max="${equip.quantidade}" value="1" data-id="${equip.id}" style="width: 80px; margin-left: 10px;">
+                <input type="number" min="1" max="${equip.quantidade}" 
+                       value="${quantidade}" 
+                       data-id="${equip.id}" 
+                       style="width: 80px; margin-left: 10px;">
             </div>
         `;
         container.appendChild(div);
     });
     
-    document.querySelectorAll('#lista-equipamentos input[type="checkbox"]').forEach(checkbox => {
+    // Event listeners para checkboxes
+    document.querySelectorAll('#lista-equipamentos-orcamento input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            const quantidadeContainer = this.closest('.equipamento-card').querySelector('.quantidade-container');
+            const quantidadeContainer = this.closest('.equipamento-orcamento-card').querySelector('.quantidade-container');
             if (quantidadeContainer) {
                 quantidadeContainer.style.display = this.checked ? 'block' : 'none';
             }
@@ -532,38 +643,353 @@ function carregarEquipamentosOrcamento() {
         });
     });
     
-    document.querySelectorAll('#lista-equipamentos input[type="number"]').forEach(input => {
+    // Event listeners para inputs de quantidade
+    document.querySelectorAll('#lista-equipamentos-orcamento input[type="number"]').forEach(input => {
         input.addEventListener('input', calcularTotalOrcamento);
     });
     
-    // Controle do formulário de orçamentos
-    const btnNovo = document.getElementById('btn-novo-orcamento');
-    const formContainer = document.getElementById('form-container-orcamento');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    const btnFecharForm = document.getElementById('btn-fechar-form');
+    calcularTotalOrcamento();
+}
 
-    if (btnNovo && formContainer) {
-        btnNovo.addEventListener('click', function() {
-            formContainer.style.display = 'block';
-            formContainer.scrollIntoView({ behavior: 'smooth' });
-        });
+function calcularTotalOrcamento() {
+    let total = 0;
+    
+    document.querySelectorAll('#lista-equipamentos-orcamento input[type="checkbox"]:checked').forEach(checkbox => {
+        const id = checkbox.getAttribute('data-id');
+        const valorUnitario = parseFloat(checkbox.getAttribute('data-valor'));
+        const quantidadeInput = document.querySelector(`#lista-equipamentos-orcamento input[type="number"][data-id="${id}"]`);
+        const quantidade = parseInt(quantidadeInput?.value) || 1;
+        
+        total += valorUnitario * quantidade;
+    });
+    
+    const totalElement = document.getElementById('total-orcamento-form');
+    if (totalElement) {
+        totalElement.textContent = total.toFixed(2);
     }
+}
 
-    if (btnCancelar) {
-        btnCancelar.addEventListener('click', function() {
-            formContainer.style.display = 'none';
-            document.getElementById('form-orcamento').reset();
-            document.getElementById('total-orcamento-form').textContent = '0.00';
-            document.querySelectorAll('#lista-equipamentos input[type="checkbox"]').forEach(cb => cb.checked = false);
-            document.querySelectorAll('.quantidade-container').forEach(container => container.style.display = 'none');
+function salvarOrcamento(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('orcamento-id').value;
+    const cliente = document.getElementById('orcamento-cliente').value;
+    const tipoEvento = document.getElementById('orcamento-evento').value;
+    const data = document.getElementById('orcamento-data').value;
+    const local = document.getElementById('orcamento-local').value;
+    const observacoes = document.getElementById('orcamento-observacoes').value;
+    
+    const equipamentosSelecionados = [];
+    document.querySelectorAll('#lista-equipamentos-orcamento input[type="checkbox"]:checked').forEach(checkbox => {
+        const equipId = checkbox.getAttribute('data-id');
+        const nome = checkbox.getAttribute('data-nome');
+        const valorUnitario = parseFloat(checkbox.getAttribute('data-valor'));
+        const quantidadeInput = document.querySelector(`#lista-equipamentos-orcamento input[type="number"][data-id="${equipId}"]`);
+        const quantidade = parseInt(quantidadeInput?.value) || 1;
+        
+        equipamentosSelecionados.push({
+            id: parseInt(equipId),
+            nome: nome,
+            quantidade: quantidade,
+            valorUnitario: valorUnitario,
+            subtotal: valorUnitario * quantidade
         });
+    });
+    
+    if (equipamentosSelecionados.length === 0) {
+        showToast('Selecione pelo menos um equipamento!', 'warning');
+        return;
     }
     
-    if (btnFecharForm) {
-        btnFecharForm.addEventListener('click', function() {
-            formContainer.style.display = 'none';
-        });
+    const total = equipamentosSelecionados.reduce((sum, item) => sum + item.subtotal, 0);
+    
+    if (id) {
+        // Editar orçamento existente
+        const index = orcamentos.findIndex(o => o.id == id);
+        if (index !== -1) {
+            orcamentos[index] = {
+                ...orcamentos[index],
+                cliente,
+                tipoEvento,
+                data,
+                local,
+                observacoes,
+                equipamentos: equipamentosSelecionados,
+                total
+            };
+            showToast('Orçamento atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Novo orçamento
+        const novoOrcamento = {
+            id: Date.now(),
+            cliente,
+            tipoEvento,
+            data,
+            local,
+            observacoes,
+            equipamentos: equipamentosSelecionados,
+            total,
+            status: 'pendente',
+            dataCriacao: new Date().toISOString()
+        };
+        orcamentos.push(novoOrcamento);
+        showToast('Orçamento criado com sucesso!', 'success');
     }
+    
+    // Salvar no localStorage
+    localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+    
+    // Atualizar interface
+    carregarOrcamentos();
+    fecharModalOrcamento();
+}
+
+function editarOrcamento(id) {
+    const orcamento = orcamentos.find(o => o.id == id);
+    if (orcamento) {
+        abrirModalOrcamento(orcamento);
+    }
+}
+
+function excluirOrcamento(id) {
+    if (confirm('Tem certeza que deseja excluir este orçamento?')) {
+        const index = orcamentos.findIndex(o => o.id == id);
+        if (index !== -1) {
+            orcamentos.splice(index, 1);
+            localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+            carregarOrcamentos();
+            showToast('Orçamento excluído com sucesso!', 'success');
+        }
+    }
+}
+
+function aprovarOrcamento(id) {
+    const orcamento = orcamentos.find(o => o.id === id);
+    if (!orcamento) return;
+    
+    // Verificar disponibilidade dos equipamentos
+    const equipamentosDisponiveis = verificarDisponibilidade(orcamento.equipamentos);
+    
+    if (!equipamentosDisponiveis.todosDisponiveis) {
+        showToast(`Equipamento "${equipamentosDisponiveis.equipamentoIndisponivel}" não disponível na quantidade solicitada!`, 'warning');
+        return;
+    }
+    
+    orcamento.status = 'aprovado';
+    localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+    
+    // Reservar equipamentos
+    reservarEquipamentos(orcamento.equipamentos);
+    
+    // Criar evento automaticamente
+    criarEventoFromOrcamento(orcamento);
+    
+    showToast('Orçamento aprovado e evento criado!', 'success');
+    carregarOrcamentos();
+}
+
+function rejeitarOrcamento(id) {
+    const orcamento = orcamentos.find(o => o.id === id);
+    if (!orcamento) return;
+    
+    orcamento.status = 'recusado';
+    localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+    
+    showToast('Orçamento recusado!', 'info');
+    carregarOrcamentos();
+}
+
+function carregarOrcamentos() {
+    const container = document.getElementById('lista-orcamentos');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    orcamentos.forEach(orc => {
+        const div = document.createElement('div');
+        div.className = 'orcamento-item';
+        div.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <h4 style="margin: 0 0 5px 0; color: var(--primary);">
+                        <i class="fas fa-user"></i> ${orc.cliente}
+                    </h4>
+                    <p style="margin: 2px 0; color: var(--gray);">
+                        <i class="fas fa-calendar-day"></i> ${formatarData(orc.data)}
+                    </p>
+                    <p style="margin: 2px 0; color: var(--gray);">
+                        <i class="fas fa-map-marker-alt"></i> ${orc.local}
+                    </p>
+                    <p style="margin: 2px 0; color: var(--gray);">
+                        <i class="fas fa-tag"></i> ${orc.tipoEvento}
+                    </p>
+                    ${orc.observacoes ? `<p style="margin: 2px 0; color: var(--gray);"><i class="fas fa-sticky-note"></i> ${orc.observacoes}</p>` : ''}
+                </div>
+                <div style="text-align: right;">
+                    <div class="status-${orc.status}" style="display: inline-block; margin-bottom: 5px;">
+                        ${orc.status.toUpperCase()}
+                    </div>
+                    <div style="font-weight: bold; margin-top: 5px; font-size: 1.1em;">
+                        R$ ${orc.total.toFixed(2)}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="orcamento-acoes">
+                ${orc.status === 'pendente' ? `
+                <button class="btn-acao btn-aprovar" onclick="aprovarOrcamento(${orc.id})">
+                    <i class="fas fa-check"></i> Aprovar
+                </button>
+                <button class="btn-acao btn-rejeitar" onclick="rejeitarOrcamento(${orc.id})">
+                    <i class="fas fa-times"></i> Rejeitar
+                </button>
+                ` : ''}
+                
+                <button class="btn-acao btn-editar" onclick="editarOrcamento(${orc.id})">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-acao btn-excluir" onclick="excluirOrcamento(${orc.id})">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+                
+                <button class="btn-acao btn-detalhes" onclick="verDetalhesOrcamento(${orc.id})">
+                    <i class="fas fa-eye"></i> Detalhes
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+    
+    // Atualizar contador
+    const contador = document.getElementById('contador-orcamentos');
+    if (contador) {
+        contador.textContent = orcamentos.length;
+    }
+}
+
+function aplicarFiltrosOrcamentos() {
+    const status = document.getElementById('filtro-status')?.value || '';
+    const busca = document.getElementById('busca-orcamento')?.value.toLowerCase() || '';
+    
+    const orcamentosFiltrados = orcamentos.filter(orc => {
+        return (!status || orc.status === status) &&
+               (!busca || orc.cliente.toLowerCase().includes(busca));
+    });
+    
+    const container = document.getElementById('lista-orcamentos');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    orcamentosFiltrados.forEach(orc => {
+        const div = document.createElement('div');
+        div.className = 'orcamento-item';
+        div.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <h4 style="margin: 0 0 5px 0; color: var(--primary);">
+                        <i class="fas fa-user"></i> ${orc.cliente}
+                    </h4>
+                    <p style="margin: 2px 0; color: var(--gray);">
+                        <i class="fas fa-calendar-day"></i> ${formatarData(orc.data)}
+                    </p>
+                    <p style="margin: 2px 0; color: var(--gray);">
+                        <i class="fas fa-map-marker-alt"></i> ${orc.local}
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <div class="status-${orc.status}" style="display: inline-block; margin-bottom: 5px;">
+                        ${orc.status.toUpperCase()}
+                    </div>
+                    <div style="font-weight: bold; margin-top: 5px;">
+                        R$ ${orc.total.toFixed(2)}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="orcamento-acoes">
+                ${orc.status === 'pendente' ? `
+                <button class="btn-acao btn-aprovar" onclick="aprovarOrcamento(${orc.id})">
+                    <i class="fas fa-check"></i> Aprovar
+                </button>
+                <button class="btn-acao btn-rejeitar" onclick="rejeitarOrcamento(${orc.id})">
+                    <i class="fas fa-times"></i> Rejeitar
+                </button>
+                ` : ''}
+                
+                <button class="btn-acao btn-editar" onclick="editarOrcamento(${orc.id})">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-acao btn-excluir" onclick="excluirOrcamento(${orc.id})">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function verDetalhesOrcamento(id) {
+    const orcamento = orcamentos.find(o => o.id === id);
+    if (!orcamento) return;
+    
+    let detalhes = `Cliente: ${orcamento.cliente}\n`;
+    detalhes += `Evento: ${orcamento.tipoEvento}\n`;
+    detalhes += `Data: ${formatarData(orcamento.data)}\n`;
+    detalhes += `Local: ${orcamento.local}\n`;
+    detalhes += `Status: ${orcamento.status}\n`;
+    detalhes += `Total: R$ ${orcamento.total.toFixed(2)}\n\n`;
+    detalhes += `Equipamentos:\n`;
+    
+    orcamento.equipamentos.forEach(equip => {
+        detalhes += `• ${equip.nome} (${equip.quantidade}x) - R$ ${equip.subtotal.toFixed(2)}\n`;
+    });
+    
+    alert(detalhes);
+}
+
+// Funções auxiliares existentes (já devem estar no seu script)
+function verificarDisponibilidade(equipamentosOrcamento) {
+    for (const equipOrc of equipamentosOrcamento) {
+        const equipamento = equipamentos.find(e => e.id === equipOrc.id);
+        if (!equipamento || equipamento.quantidade < equipOrc.quantidade) {
+            return {
+                todosDisponiveis: false,
+                equipamentoIndisponivel: equipOrc.nome
+            };
+        }
+    }
+    return { todosDisponiveis: true };
+}
+
+function reservarEquipamentos(equipamentosOrcamento) {
+    equipamentosOrcamento.forEach(equipOrc => {
+        const equipamento = equipamentos.find(e => e.id === equipOrc.id);
+        if (equipamento) {
+            equipamento.quantidade -= equipOrc.quantidade;
+        }
+    });
+    localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
+}
+
+function criarEventoFromOrcamento(orcamento) {
+    const novoEvento = {
+        id: Date.now(),
+        cliente: orcamento.cliente,
+        tipoEvento: orcamento.tipoEvento,
+        data: orcamento.data,
+        local: orcamento.local,
+        observacoes: orcamento.observacoes,
+        equipamentos: orcamento.equipamentos,
+        orcamentoId: orcamento.id,
+        status: 'agendado'
+    };
+    
+    eventos.push(novoEvento);
+    localStorage.setItem('eventos', JSON.stringify(eventos));
+    
+    showToast('Evento criado automaticamente!', 'success');
 }
 
 function calcularValorEquipamento(equipamento) {

@@ -946,6 +946,13 @@ tr:last-child td {
     transform: translateY(-1px);
 }
 
+
+
+
+
+
+
+
 /* Orçamentos */
 /* ============================================= */
 /* ESTILOS PARA O CRUD DE ORÇAMENTOS */
@@ -1962,3 +1969,168 @@ html, body {
 .lista-equipamentos::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
 }
+/* ============================================= */
+/* ESTILOS PARA O CRUD DE ORÇAMENTOS */
+/* ============================================= */
+
+/* Ações dos orçamentos */
+.orcamento-acoes {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-acao {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-editar {
+    background: #2196F3;
+    color: white;
+}
+
+.btn-excluir {
+    background: #F44336;
+    color: white;
+}
+
+.btn-aprovar {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-rejeitar {
+    background: #FF9800;
+    color: white;
+}
+
+.btn-detalhes {
+    background: #9C27B0;
+    color: white;
+}
+
+.btn-acao:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+/* Status dos orçamentos */
+.status-pendente {
+    background: rgba(255, 193, 7, 0.15);
+    color: #FFC107;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-aprovado {
+    background: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-recusado {
+    background: rgba(244, 67, 54, 0.15);
+    color: #F44336;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Lista de equipamentos no modal */
+.lista-equipamentos {
+    display: grid;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(40,40,40,0.6);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.equipamento-orcamento-card {
+    background: rgba(50,50,50,0.8);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s;
+}
+
+.equipamento-orcamento-card:hover {
+    background: rgba(60,60,60,0.8);
+    transform: translateX(5px);
+}
+
+.equipamento-orcamento-card h4 {
+    margin: 0 0 8px 0;
+    color: var(--light-gray);
+    font-size: 1rem;
+}
+
+.equipamento-orcamento-card p {
+    margin: 2px 0;
+    font-size: 0.85em;
+    color: var(--gray);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.quantidade-container {
+    margin-top: 10px;
+    display: none;
+}
+
+.quantidade-container label {
+    font-size: 0.9em;
+    color: var(--light-gray);
+}
+
+.total-orcamento {
+    text-align: right;
+    padding: 15px;
+    background: rgba(255,107,0,0.1);
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 1.2em;
+    border: 1px solid rgba(255,107,0,0.3);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .orcamento-acoes {
+        flex-direction: column;
+    }
+    
+    .btn-acao {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .lista-equipamentos {
+        max-height: 300px;
+    }
+}
+
