@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 6, material: "Estrutura Metalica 6x6", quantidade: 2, local: "barracao", categoria: "estrutura", observacoes: "Completa" },
             { id: 7, material: "Projetor Epson", quantidade: 1, local: "silene", categoria: "projecao", observacoes: "Lâmpada nova" },
             { id: 8, material: "Cabo de Rede 20m", quantidade: 10, local: "barracao", categoria: "acessorio", observacoes: "Bom estado" }
+
         ];
         localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
     }
@@ -2431,3 +2432,73 @@ function carregarProximosEventos() {
 
 window.checkScreenSize = checkScreenSize;
 window.inicializarMenuMobile = inicializarMenuMobile;
+
+// Adicionar esta função ao seu código JavaScript
+function melhorarExperienciaMobileOrcamentos() {
+    const modal = document.getElementById('modal-orcamento');
+    const listaEquipamentos = document.getElementById('lista-equipamentos-orcamento');
+    
+    if (!modal || !listaEquipamentos) return;
+    
+    // Prevenir zoom em inputs no iOS
+    document.querySelectorAll('input, select, textarea').forEach(element => {
+        element.addEventListener('focus', function() {
+            this.style.fontSize = '16px'; // Prevenir zoom no iOS
+        });
+    });
+    
+    // Melhorar scroll no mobile
+    listaEquipamentos.style.webkitOverflowScrolling = 'touch';
+    
+    // Fechar modal ao tocar fora (apenas no mobile)
+    if (window.innerWidth <= 768) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                fecharModalOrcamento();
+            }
+        });
+    }
+}
+
+// Chamar esta função quando abrir o modal de orçamento
+function abrirModalOrcamento(orcamento = null) {
+    const modal = document.getElementById('modal-orcamento');
+    const titulo = document.getElementById('modal-orcamento-title');
+    const form = document.getElementById('form-orcamento');
+    
+    if (orcamento) {
+        // Modo edição
+        titulo.innerHTML = '<i class="fas fa-edit"></i> Editar Orçamento';
+        document.getElementById('orcamento-id').value = orcamento.id;
+        document.getElementById('orcamento-cliente').value = orcamento.cliente;
+        document.getElementById('orcamento-evento').value = orcamento.tipoEvento;
+        document.getElementById('orcamento-data').value = orcamento.data;
+        document.getElementById('orcamento-local').value = orcamento.local;
+        document.getElementById('orcamento-observacoes').value = orcamento.observacoes || '';
+        
+        // Carregar equipamentos selecionados
+        setTimeout(() => {
+            carregarEquipamentosOrcamento(orcamento.equipamentos);
+            melhorarExperienciaMobileOrcamentos(); // ✅ MELHORIA MOBILE
+        }, 100);
+    } else {
+        // Modo criação
+        titulo.innerHTML = '<i class="fas fa-file-invoice-dollar"></i> Novo Orçamento';
+        form.reset();
+        document.getElementById('orcamento-id').value = '';
+        document.getElementById('total-orcamento-form').textContent = '0.00';
+        
+        // Carregar equipamentos vazios
+        setTimeout(() => {
+            carregarEquipamentosOrcamento([]);
+            melhorarExperienciaMobileOrcamentos(); // ✅ MELHORIA MOBILE
+        }, 100);
+    }
+    
+    modal.style.display = 'flex';
+    
+    // ✅ FOCUS NO PRIMEIRO CAMPO (melhoria UX mobile)
+    setTimeout(() => {
+        document.getElementById('orcamento-cliente')?.focus();
+    }, 300);
+}
