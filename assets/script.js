@@ -264,7 +264,16 @@ function formatarCategoria(categoria) {
 }
 
 function formatarData(dataString) {
-    const data = new Date(dataString);
+    if (!dataString) return 'Data inválida';
+    
+    // Corrige o problema do fuso horário criando a data no horário local
+    const data = new Date(dataString + 'T00:00:00');
+    
+    // Verifica se a data é válida
+    if (isNaN(data.getTime())) {
+        return 'Data inválida';
+    }
+    
     return data.toLocaleDateString('pt-BR');
 }
 
@@ -1698,6 +1707,225 @@ function criarEventoFromOrcamento(orcamento) {
     
     showToast('Evento criado automaticamente!', 'success');
 }
+// ✅ FUNÇÃO PARA EXCLUIR EVENTO COMPLETO (SINCRONIZADO E IMEDIATO)
+function excluirEventoCompleto(eventoId) {
+    const evento = eventos.find(e => e.id === eventoId);
+    if (!evento) return;
+    
+    if (confirm(`Tem certeza que deseja excluir o evento de "${evento.cliente}"?\n\nEsta ação excluirá também o checklist e atualizará o orçamento.`)) {
+        
+        // ✅ 1. ENCONTRAR ORÇAMENTO CORRESPONDENTE
+        const orcamento = orcamentos.find(o => o.id === evento.orcamentoId);
+        
+        // ✅ 2. LIBERAR EQUIPAMENTOS RESERVADOS
+        liberarEquipamentosEvento(evento.equipamentos);
+        
+        // ✅ 3. ATUALIZAR STATUS DO ORÇAMENTO (se existir)
+        if (orcamento) {
+            orcamento.status = 'cancelado';
+            orcamento.observacoes = orcamento.observacoes 
+                ? `${orcamento.observacoes} | Evento cancelado em ${new Date().toLocaleDateString()}`
+                : `Evento cancelado em ${new Date().toLocaleDateString()}`;
+        }
+        
+        // ✅ 4. EXCLUIR EVENTO
+        const eventoIndex = eventos.findIndex(e => e.id === eventoId);
+        if (eventoIndex !== -1) {
+            eventos.splice(eventoIndex, 1);
+            
+            // ✅ 5. EXCLUIR CHECKLIST ASSOCIADO
+            const checklistIndex = checklists.findIndex(c => c.eventoId === eventoId);
+            if (checklistIndex !== -1) {
+                checklists.splice(checklistIndex, 1);
+                localStorage.setItem('checklists', JSON.stringify(checklists));
+            }
+            
+            // ✅ 6. SALVAR TODOS OS DADOS
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+            localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+            
+            showToast('Evento excluído com sucesso! Todas as informações sincronizadas.', 'success');
+            
+            // ✅ 7. ATUALIZAR INTERFACE IMEDIATAMENTE (SEM TIMEOUT)
+            carregarEventosAgendados(); // Atualiza eventos AGORA
+            carregarProximosEventos(); // Atualiza próximos eventos AGORA
+            
+            // Se estiver na página de checklist, atualizar também
+            if (document.getElementById('selecionar-evento')) {
+                carregarEventosChecklist();
+            }
+            
+            // Se estiver na página de orçamentos, atualizar também
+            if (document.getElementById('lista-orcamentos')) {
+                aplicarFiltrosOrcamentos();
+            }
+        }
+    }
+}
+
+// ✅ FUNÇÃO EXCLUIR ORÇAMENTO (CORRIGIDA - ATUALIZAÇÃO IMEDIATA SEM TIMEOUT)
+function excluirOrcamento(id) {
+    if (confirm('Tem certeza que deseja excluir este orçamento?')) {
+        const index = orcamentos.findIndex(o => o.id == id);
+        if (index !== -1) {
+            const orcamento = orcamentos[index];
+            
+            // ✅ 1. ENCONTRAR E EXCLUIR EVENTO CORRESPONDENTE
+            const eventoIndex = eventos.findIndex(e => e.orcamentoId === id);
+            if (eventoIndex !== -1) {
+                const evento = eventos[eventoIndex];
+                
+                // ✅ 2. LIBERAR EQUIPAMENTOS DO EVENTO
+                liberarEquipamentosEvento(evento.equipamentos);
+                
+                // ✅ 3. EXCLUIR EVENTO
+                eventos.splice(eventoIndex, 1);
+                
+                // ✅ 4. EXCLUIR CHECKLIST ASSOCIADO
+                const checklistIndex = checklists.findIndex(c => c.eventoId === evento.id);
+                if (checklistIndex !== -1) {
+                    checklists.splice(checklistIndex, 1);
+                    localStorage.setItem('checklists', JSON.stringify(checklists));
+                }
+            }
+            
+            // ✅ 5. EXCLUIR ORÇAMENTO
+            orcamentos.splice(index, 1);
+            localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+            
+            showToast('Orçamento excluído com sucesso! Evento e checklist removidos.', 'success');
+            
+            // ✅ 6. ATUALIZAR INTERFACE IMEDIATAMENTE (SEM TIMEOUT)
+            aplicarFiltrosOrcamentos(); // Atualiza lista de orçamentos AGORA
+            
+            // Atualizar eventos se estiverem visíveis
+            if (document.getElementById('lista-eventos') || document.getElementById('lista-proximos-eventos')) {
+                carregarEventosAgendados();
+                carregarProximosEventos();
+            }
+            
+            // Se estiver na página de checklist, atualizar também
+            if (document.getElementById('selecionar-evento')) {
+                carregarEventosChecklist();
+            }
+        }
+    }
+}
+
+// ✅ FUNÇÃO REJEITAR ORÇAMENTO (CORRIGIDA - ATUALIZAÇÃO IMEDIATA SEM TIMEOUT)
+function rejeitarOrcamento(id) {
+    const orcamento = orcamentos.find(o => o.id === id);
+    if (!orcamento) return;
+    
+    if (confirm(`Deseja rejeitar o orçamento de "${orcamento.cliente}"?`)) {
+        
+        // ✅ 1. ENCONTRAR E EXCLUIR EVENTO CORRESPONDENTE (se existir)
+        const eventoIndex = eventos.findIndex(e => e.orcamentoId === id);
+        if (eventoIndex !== -1) {
+            const evento = eventos[eventoIndex];
+            
+            // ✅ 2. LIBERAR EQUIPAMENTOS DO EVENTO
+            liberarEquipamentosEvento(evento.equipamentos);
+            
+            // ✅ 3. EXCLUIR EVENTO
+            eventos.splice(eventoIndex, 1);
+            
+            // ✅ 4. EXCLUIR CHECKLIST ASSOCIADO
+            const checklistIndex = checklists.findIndex(c => c.eventoId === evento.id);
+            if (checklistIndex !== -1) {
+                checklists.splice(checklistIndex, 1);
+                localStorage.setItem('checklists', JSON.stringify(checklists));
+            }
+        }
+        
+        // ✅ 5. ATUALIZAR STATUS DO ORÇAMENTO
+        orcamento.status = 'recusado';
+        localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+        localStorage.setItem('eventos', JSON.stringify(eventos));
+        
+        showToast('Orçamento recusado! Evento removido.', 'info');
+        
+        // ✅ 6. ATUALIZAR INTERFACE IMEDIATAMENTE (SEM TIMEOUT)
+        aplicarFiltrosOrcamentos(); // Atualiza lista de orçamentos AGORA
+    }
+}
+
+// ✅ FUNÇÃO APROVAR ORÇAMENTO (CORRIGIDA - ATUALIZAÇÃO IMEDIATA SEM TIMEOUT)
+function aprovarOrcamento(id) {
+    const orcamento = orcamentos.find(o => o.id === id);
+    if (!orcamento) return;
+    
+    // ✅ VERIFICAR SE JÁ EXISTE EVENTO PARA ESTE ORÇAMENTO
+    const eventoExistente = eventos.find(e => e.orcamentoId === id);
+    if (eventoExistente) {
+        showToast('Este orçamento já tem um evento associado!', 'warning');
+        return;
+    }
+    
+    // Verificar disponibilidade dos equipamentos
+    const equipamentosDisponiveis = verificarDisponibilidade(orcamento.equipamentos);
+    
+    if (!equipamentosDisponiveis.todosDisponiveis) {
+        showToast(`Equipamento "${equipamentosDisponiveis.equipamentoIndisponivel}" não disponível na quantidade solicitada!`, 'warning');
+        return;
+    }
+    
+    orcamento.status = 'aprovado';
+    localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+    
+    // Reservar equipamentos
+    reservarEquipamentos(orcamento.equipamentos);
+    
+    // Criar evento automaticamente
+    criarEventoFromOrcamento(orcamento);
+    
+    showToast('Orçamento aprovado e evento criado!', 'success');
+    
+    // ✅ ATUALIZAR INTERFACE IMEDIATAMENTE (SEM TIMEOUT)
+    aplicarFiltrosOrcamentos(); // Atualiza lista de orçamentos AGORA
+}
+
+// ✅ FUNÇÃO CRIAR EVENTO (CORRIGIDA - ATUALIZAÇÃO IMEDIATA SEM TIMEOUT)
+function criarEventoFromOrcamento(orcamento) {
+    // ✅ VERIFICAR SE JÁ EXISTE EVENTO PARA ESTE ORÇAMENTO
+    const eventoExistente = eventos.find(e => e.orcamentoId === orcamento.id);
+    if (eventoExistente) {
+        console.log('⚠️ Evento já existe para este orçamento:', eventoExistente);
+        return;
+    }
+    
+    const novoEvento = {
+        id: Date.now(),
+        cliente: orcamento.cliente,
+        tipoEvento: orcamento.tipoEvento,
+        data: orcamento.data,
+        local: orcamento.local,
+        observacoes: orcamento.observacoes,
+        equipamentos: orcamento.equipamentos,
+        orcamentoId: orcamento.id,
+        status: 'agendado'
+    };
+    
+    eventos.push(novoEvento);
+    localStorage.setItem('eventos', JSON.stringify(eventos));
+    
+    console.log('🎉 NOVO EVENTO CRIADO:', novoEvento);
+    
+    showToast('Evento criado automaticamente!', 'success');
+    
+    // ✅ ATUALIZAR INTERFACE IMEDIATAMENTE (SEM TIMEOUT)
+    // Atualizar eventos se estiverem visíveis
+    if (document.getElementById('lista-eventos') || document.getElementById('lista-proximos-eventos')) {
+        carregarEventosAgendados();
+        carregarProximosEventos();
+    }
+    
+    // Se estiver na página de checklist, atualizar também
+    if (document.getElementById('selecionar-evento')) {
+        carregarEventosChecklist();
+    }
+}
 // ✅ FUNÇÃO PARA EXCLUIR EVENTO (CORRIGIDA)
 function excluirEvento(id) {
     const evento = eventos.find(e => e.id === id);
@@ -1915,6 +2143,10 @@ function carregarEventosAgendados() {
     });
 }
 
+
+// =============================================
+// SISTEMA DE CALENDÁRIO
+// =============================================
 // =============================================
 // SISTEMA DE CALENDÁRIO
 // =============================================
@@ -1996,22 +2228,45 @@ function renderCalendar() {
         dayElement.appendChild(dayHeader);
         
         const currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        
+        // CORREÇÃO AQUI: Usar a mesma lógica de formatação para comparar datas
         const dayEvents = eventos.filter(evento => {
-            const eventDate = new Date(evento.data);
-            return eventDate.toDateString() === currentDay.toDateString();
+            const eventDate = corrigirDataFusoHorario(evento.data);
+            const currentDayCorrected = new Date(currentDay.getFullYear(), currentDay.getMonth(), currentDay.getDate());
+            
+            return eventDate.getTime() === currentDayCorrected.getTime();
         });
         
         dayEvents.forEach(evento => {
             const eventElement = document.createElement('div');
             eventElement.className = 'event-item';
             eventElement.textContent = evento.cliente;
+            eventElement.setAttribute('title', `${evento.cliente} - ${evento.tipoEvento}`);
             dayElement.appendChild(eventElement);
         });
+        
+        // Destacar o dia atual
+        const today = new Date();
+        if (currentDay.getDate() === today.getDate() && 
+            currentDay.getMonth() === today.getMonth() && 
+            currentDay.getFullYear() === today.getFullYear()) {
+            dayElement.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+            dayElement.style.border = '2px solid #4CAF50';
+        }
         
         calendarGrid.appendChild(dayElement);
     }
     
     carregarListaEventos();
+}
+
+// Função auxiliar para corrigir o fuso horário nas datas
+function corrigirDataFusoHorario(dataString) {
+    if (!dataString) return new Date();
+    
+    // Usa a mesma lógica da função formatarData
+    const [ano, mes, dia] = dataString.split('-').map(Number);
+    return new Date(ano, mes - 1, dia);
 }
 
 function carregarListaEventos() {
@@ -2020,7 +2275,10 @@ function carregarListaEventos() {
     
     container.innerHTML = '';
     
-    eventos.forEach(evento => {
+    // Ordenar eventos por data
+    const eventosOrdenados = [...eventos].sort((a, b) => new Date(a.data) - new Date(b.data));
+    
+    eventosOrdenados.forEach(evento => {
         const div = document.createElement('div');
         div.className = 'evento-item';
         div.style.cssText = `
@@ -2038,6 +2296,29 @@ function carregarListaEventos() {
         `;
         container.appendChild(div);
     });
+}
+
+// Função formatarData corrigida (mantenha esta também)
+function formatarData(dataString) {
+    if (!dataString) return 'Data inválida';
+    
+    try {
+        // Divide a data em partes para evitar problemas de fuso horário
+        const [ano, mes, dia] = dataString.split('-').map(Number);
+        
+        // Cria a data no horário local
+        const data = new Date(ano, mes - 1, dia);
+        
+        // Verifica se a data é válida
+        if (isNaN(data.getTime())) {
+            return 'Data inválida';
+        }
+        
+        return data.toLocaleDateString('pt-BR');
+    } catch (error) {
+        console.error('Erro ao formatar data:', error);
+        return 'Data inválida';
+    }
 }
 
 // =============================================
