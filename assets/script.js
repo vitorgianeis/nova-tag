@@ -546,8 +546,21 @@ function inicializarSistemaOrcamentos() {
     if (filtroStatus) filtroStatus.addEventListener('change', aplicarFiltrosOrcamentos);
     if (buscaOrcamento) buscaOrcamento.addEventListener('input', aplicarFiltrosOrcamentos);
     
+    // ✅ CORREÇÃO: Carregar orçamentos quando a página inicia
+    aplicarFiltrosOrcamentos();
+    
     console.log('✅ Sistema de orçamentos inicializado');
 }
+    
+    // Filtros
+    const filtroStatus = document.getElementById('filtro-status');
+    const buscaOrcamento = document.getElementById('busca-orcamento');
+    
+    if (filtroStatus) filtroStatus.addEventListener('change', aplicarFiltrosOrcamentos);
+    if (buscaOrcamento) buscaOrcamento.addEventListener('input', aplicarFiltrosOrcamentos);
+    
+    console.log('✅ Sistema de orçamentos inicializado');
+
 
 function abrirModalOrcamento(orcamento = null) {
     const modal = document.getElementById('modal-orcamento');
@@ -897,37 +910,52 @@ function aplicarFiltrosOrcamentos() {
                     <p style="margin: 2px 0; color: var(--gray);">
                         <i class="fas fa-map-marker-alt"></i> ${orc.local}
                     </p>
+                    <p style="margin: 2px 0; color: var(--gray);">
+                        <i class="fas fa-tag"></i> ${orc.tipoEvento}
+                    </p>
+                    ${orc.observacoes ? `<p style="margin: 2px 0; color: var(--gray);"><i class="fas fa-sticky-note"></i> ${orc.observacoes}</p>` : ''}
                 </div>
                 <div style="text-align: right;">
-                    <div class="status-${orc.status}" style="display: inline-block; margin-bottom: 5px;">
+                    <div class="status-${orc.status}" style="display: inline-block; margin-bottom: 5px; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">
                         ${orc.status.toUpperCase()}
                     </div>
-                    <div style="font-weight: bold; margin-top: 5px;">
+                    <div style="font-weight: bold; margin-top: 5px; font-size: 1.1em;">
                         R$ ${orc.total.toFixed(2)}
                     </div>
                 </div>
             </div>
             
-            <div class="orcamento-acoes">
+            <div class="orcamento-acoes" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                <!-- Botões Aprovar/Rejeitar - APENAS para pendentes -->
                 ${orc.status === 'pendente' ? `
-                <button class="btn-acao btn-aprovar" onclick="aprovarOrcamento(${orc.id})">
+                <button class="btn-acao btn-aprovar" onclick="aprovarOrcamento(${orc.id})" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px;">
                     <i class="fas fa-check"></i> Aprovar
                 </button>
-                <button class="btn-acao btn-rejeitar" onclick="rejeitarOrcamento(${orc.id})">
+                <button class="btn-acao btn-rejeitar" onclick="rejeitarOrcamento(${orc.id})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px;">
                     <i class="fas fa-times"></i> Rejeitar
                 </button>
                 ` : ''}
                 
-                <button class="btn-acao btn-editar" onclick="editarOrcamento(${orc.id})">
+                <!-- Botões Editar/Excluir/Detalhes - PARA TODOS os status (SEM CONDIÇÃO) -->
+                <button class="btn-acao btn-editar" onclick="editarOrcamento(${orc.id})" style="background: #FF9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px;">
                     <i class="fas fa-edit"></i> Editar
                 </button>
-                <button class="btn-acao btn-excluir" onclick="excluirOrcamento(${orc.id})">
+                <button class="btn-acao btn-excluir" onclick="excluirOrcamento(${orc.id})" style="background: #795548; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px;">
                     <i class="fas fa-trash"></i> Excluir
+                </button>
+                <button class="btn-acao btn-detalhes" onclick="verDetalhesOrcamento(${orc.id})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px;">
+                    <i class="fas fa-eye"></i> Detalhes
                 </button>
             </div>
         `;
         container.appendChild(div);
     });
+    
+    // Atualizar contador
+    const contador = document.getElementById('contador-orcamentos');
+    if (contador) {
+        contador.textContent = orcamentosFiltrados.length;
+    }
 }
 
 function verDetalhesOrcamento(id) {
@@ -1252,10 +1280,35 @@ function carregarEventosChecklist() {
     
     select.innerHTML = '<option value="">Selecione um evento...</option>';
     
-    eventos.forEach(evento => {
+    // ✅ DEBUG: Ver todos os eventos disponíveis
+    console.log('🎯 TODOS OS EVENTOS DISPONÍVEIS:', eventos);
+    
+    // ✅ FILTRAR CORRETAMENTE: Apenas eventos de orçamentos aprovados
+    const eventosAprovados = eventos.filter(evento => {
+        const temOrcamentoId = evento.orcamentoId !== undefined && evento.orcamentoId !== null;
+        const statusAgendado = evento.status === 'agendado';
+        
+        console.log(`📋 Evento: ${evento.cliente} | orcamentoId: ${evento.orcamentoId} | status: ${evento.status} | INCLUIR: ${temOrcamentoId && statusAgendado}`);
+        
+        return temOrcamentoId && statusAgendado;
+    });
+    
+    console.log('✅ EVENTOS APROVADOS FILTRADOS:', eventosAprovados);
+    
+    if (eventosAprovados.length === 0) {
+        select.innerHTML = `
+            <option value="">Nenhum evento aprovado disponível</option>
+        `;
+        
+        // Mostrar mensagem informativa
+        mostrarMensagemChecklistVazio();
+        return;
+    }
+    
+    eventosAprovados.forEach(evento => {
         const option = document.createElement('option');
         option.value = evento.id;
-        option.textContent = `${evento.cliente} - ${formatarData(evento.data)}`;
+        option.textContent = `${evento.cliente} - ${formatarData(evento.data)} - ${evento.local}`;
         select.appendChild(option);
     });
     
@@ -1385,7 +1438,23 @@ function carregarEventosAgendados() {
     
     container.innerHTML = '';
     
-    eventos.forEach(evento => {
+    // ✅ FILTRAR: Mostrar apenas eventos aprovados (com orcamentoId)
+    const eventosAprovados = eventos.filter(evento => {
+        return evento.orcamentoId && evento.status === 'agendado';
+    });
+    
+    if (eventosAprovados.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--gray);">
+                <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 20px;"></i>
+                <h3>Nenhum Evento Agendado</h3>
+                <p>Os eventos aparecerão aqui automaticamente quando você aprovar orçamentos.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    eventosAprovados.forEach(evento => {
         const div = document.createElement('div');
         div.className = 'evento-item';
         div.style.cssText = `
@@ -1394,17 +1463,28 @@ function carregarEventosAgendados() {
             margin-bottom: 10px;
             border-radius: 8px;
             border-left: 4px solid var(--primary);
+            position: relative;
         `;
         div.innerHTML = `
             <h4 style="margin: 0 0 5px 0; color: var(--primary);">${evento.cliente}</h4>
             <p style="margin: 0 0 5px 0;"><strong>Data:</strong> ${formatarData(evento.data)}</p>
             <p style="margin: 0 0 5px 0;"><strong>Local:</strong> ${evento.local}</p>
             <p style="margin: 0 0 5px 0;"><strong>Tipo:</strong> ${evento.tipoEvento}</p>
+            <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #4CAF50;">
+                <i class="fas fa-check-circle"></i> Evento Aprovado
+            </p>
             <div style="margin-top: 10px;">
                 <strong>Equipamentos:</strong>
                 <ul style="margin: 5px 0; padding-left: 20px;">
                     ${evento.equipamentos.map(equip => `<li>${equip.nome} (${equip.quantidade}x)</li>`).join('')}
                 </ul>
+            </div>
+            
+            <!-- Botão Excluir Evento -->
+            <div style="margin-top: 10px; text-align: right;">
+                <button class="btn-excluir-evento" onclick="excluirEvento(${evento.id})" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                    <i class="fas fa-trash"></i> Excluir Evento
+                </button>
             </div>
         `;
         container.appendChild(div);
@@ -1416,12 +1496,25 @@ function carregarProximosEventos() {
     if (!container) return;
     
     const hoje = new Date();
+    
+    // ✅ FILTRAR: Apenas eventos aprovados futuros
     const eventosFuturos = eventos.filter(evento => {
         const dataEvento = new Date(evento.data);
-        return dataEvento >= hoje;
+        return evento.orcamentoId && evento.status === 'agendado' && dataEvento >= hoje;
     }).slice(0, 5); // Mostrar apenas os próximos 5 eventos
     
     container.innerHTML = '';
+    
+    if (eventosFuturos.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: var(--gray);">
+                <i class="fas fa-calendar-plus fa-2x" style="margin-bottom: 10px;"></i>
+                <p>Nenhum evento futuro</p>
+                <p style="font-size: 0.8em;">Aprove orçamentos para agendar eventos</p>
+            </div>
+        `;
+        return;
+    }
     
     eventosFuturos.forEach(evento => {
         const div = document.createElement('div');
@@ -1432,12 +1525,391 @@ function carregarProximosEventos() {
             margin-bottom: 10px;
             border-radius: 8px;
             border-left: 4px solid var(--primary);
+            position: relative;
         `;
         div.innerHTML = `
             <h4 style="margin: 0 0 5px 0; color: var(--primary);">${evento.cliente}</h4>
             <p style="margin: 0 0 5px 0;"><strong>Data:</strong> ${formatarData(evento.data)}</p>
             <p style="margin: 0 0 5px 0;"><strong>Local:</strong> ${evento.local}</p>
             <p style="margin: 0;"><strong>Tipo:</strong> ${evento.tipoEvento}</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.8em; color: #4CAF50;">
+                <i class="fas fa-check-circle"></i> Aprovado
+            </p>
+            
+            <!-- Botão Excluir Evento -->
+            <div style="margin-top: 10px; text-align: right;">
+                <button class="btn-excluir-evento" onclick="excluirEvento(${evento.id})" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ✅ FUNÇÃO PARA EXCLUIR EVENTO
+function excluirEvento(id) {
+    const evento = eventos.find(e => e.id === id);
+    if (!evento) return;
+    
+    if (confirm(`Tem certeza que deseja excluir o evento de "${evento.cliente}"?\n\nEsta ação não pode ser desfeita e liberará os equipamentos reservados.`)) {
+        
+        // ✅ LIBERAR EQUIPAMENTOS RESERVADOS
+        liberarEquipamentosEvento(evento.equipamentos);
+        
+        // ✅ EXCLUIR EVENTO
+        const index = eventos.findIndex(e => e.id === id);
+        if (index !== -1) {
+            eventos.splice(index, 1);
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+            
+            // ✅ EXCLUIR CHECKLIST ASSOCIADO (se existir)
+            const checklistIndex = checklists.findIndex(c => c.eventoId === id);
+            if (checklistIndex !== -1) {
+                checklists.splice(checklistIndex, 1);
+                localStorage.setItem('checklists', JSON.stringify(checklists));
+            }
+            
+            showToast('Evento excluído com sucesso! Equipamentos liberados.', 'success');
+            
+            // ✅ ATUALIZAR TODAS AS INTERFACES
+            atualizarTodosEventos();
+        }
+    }
+}
+
+// ✅ FUNÇÃO PARA LIBERAR EQUIPAMENTOS DO EVENTO EXCLUÍDO
+function liberarEquipamentosEvento(equipamentosEvento) {
+    equipamentosEvento.forEach(equipEvento => {
+        const equipamento = equipamentos.find(e => e.id === equipEvento.id);
+        if (equipamento) {
+            equipamento.quantidade += equipEvento.quantidade;
+        }
+    });
+    localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
+}
+
+// ✅ FUNÇÃO PARA LIMPAR EVENTOS SEM ORÇAMENTO (MANUAIS)
+function limparEventosManuais() {
+    console.log('🧹 Procurando eventos manuais para excluir...');
+    
+    const eventosManuais = eventos.filter(evento => !evento.orcamentoId);
+    
+    if (eventosManuais.length === 0) {
+        console.log('✅ Nenhum evento manual encontrado.');
+        showToast('Não há eventos manuais para excluir.', 'info');
+        return;
+    }
+    
+    if (confirm(`Encontrados ${eventosManuais.length} evento(s) manual(is).\nDeseja excluir todos os eventos que não vieram de orçamentos?`)) {
+        
+        // Liberar equipamentos de todos os eventos manuais
+        eventosManuais.forEach(evento => {
+            liberarEquipamentosEvento(evento.equipamentos);
+        });
+        
+        // Manter apenas eventos com orcamentoId
+        eventos = eventos.filter(evento => evento.orcamentoId);
+        localStorage.setItem('eventos', JSON.stringify(eventos));
+        
+        // Limpar checklists associados aos eventos excluídos
+        const eventosIdsManuais = eventosManuais.map(e => e.id);
+        checklists = checklists.filter(checklist => !eventosIdsManuais.includes(checklist.eventoId));
+        localStorage.setItem('checklists', JSON.stringify(checklists));
+        
+        showToast(`${eventosManuais.length} evento(s) manual(is) excluído(s) com sucesso!`, 'success');
+        
+        // Atualizar interfaces
+        atualizarTodosEventos();
+    }
+}
+
+// ✅ FUNÇÃO PARA VERIFICAR EVENTOS MANUAIS
+function verificarEventosManuais() {
+    const eventosManuais = eventos.filter(evento => !evento.orcamentoId);
+    
+    if (eventosManuais.length > 0) {
+        console.log(`⚠️ Encontrados ${eventosManuais.length} eventos manuais:`, eventosManuais);
+        
+        // Mostrar botão de limpeza se houver eventos manuais
+        const container = document.getElementById('lista-eventos');
+        if (container && !document.getElementById('btn-limpar-manuais')) {
+            const btnLimpar = document.createElement('button');
+            btnLimpar.id = 'btn-limpar-manuais';
+            btnLimpar.innerHTML = `<i class="fas fa-broom"></i> Limpar Eventos Manuais (${eventosManuais.length})`;
+            btnLimpar.style.cssText = `
+                background: #ff9800;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            `;
+            btnLimpar.onclick = limparEventosManuais;
+            container.parentNode.insertBefore(btnLimpar, container);
+        }
+    }
+    
+    return eventosManuais.length;
+}
+
+// ✅ FUNÇÃO ATUALIZADA PARA ATUALIZAR TODOS OS EVENTOS
+function atualizarTodosEventos() {
+    carregarEventosAgendados();
+    carregarProximosEventos();
+    
+    // Verificar e mostrar eventos manuais
+    verificarEventosManuais();
+    
+    // Se estiver na página de checklist, atualizar também
+    if (document.getElementById('selecionar-evento')) {
+        carregarEventosChecklist();
+    }
+    
+    // Atualizar dashboard se estiver visível
+    if (document.getElementById('total-eventos')) {
+        atualizarDashboard();
+    }
+}
+
+// ✅ MODIFICAR A FUNÇÃO criarEventoFromOrcamento
+function criarEventoFromOrcamento(orcamento) {
+    const novoEvento = {
+        id: Date.now(),
+        cliente: orcamento.cliente,
+        tipoEvento: orcamento.tipoEvento,
+        data: orcamento.data,
+        local: orcamento.local,
+        observacoes: orcamento.observacoes,
+        equipamentos: orcamento.equipamentos,
+        orcamentoId: orcamento.id,
+        status: 'agendado'
+    };
+    
+    eventos.push(novoEvento);
+    localStorage.setItem('eventos', JSON.stringify(eventos));
+    
+    // ATUALIZAR TODAS AS INTERFACES
+    atualizarTodosEventos();
+    
+    showToast('Evento criado automaticamente!', 'success');
+}
+// ✅ FUNÇÃO PARA EXCLUIR EVENTO (CORRIGIDA)
+function excluirEvento(id) {
+    const evento = eventos.find(e => e.id === id);
+    if (!evento) return;
+    
+    if (confirm(`Tem certeza que deseja excluir o evento de "${evento.cliente}"?\n\nEsta ação não pode ser desfeita e liberará os equipamentos reservados.`)) {
+        
+        // ✅ 1. ENCONTRAR O ORÇAMENTO CORRESPONDENTE
+        const orcamentoCorrespondente = orcamentos.find(o => o.id === evento.orcamentoId);
+        
+        // ✅ 2. LIBERAR EQUIPAMENTOS RESERVADOS
+        liberarEquipamentosEvento(evento.equipamentos);
+        
+        // ✅ 3. ATUALIZAR STATUS DO ORÇAMENTO PARA "recusado" ou "cancelado"
+        if (orcamentoCorrespondente) {
+            orcamentoCorrespondente.status = 'cancelado';
+            orcamentoCorrespondente.observacoes = orcamentoCorrespondente.observacoes 
+                ? `${orcamentoCorrespondente.observacoes} | Evento cancelado em ${new Date().toLocaleDateString()}`
+                : `Evento cancelado em ${new Date().toLocaleDateString()}`;
+            
+            console.log('📝 Orçamento atualizado:', orcamentoCorrespondente);
+        }
+        
+        // ✅ 4. EXCLUIR EVENTO
+        const index = eventos.findIndex(e => e.id === id);
+        if (index !== -1) {
+            eventos.splice(index, 1);
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+            
+            // ✅ 5. EXCLUIR CHECKLIST ASSOCIADO (se existir)
+            const checklistIndex = checklists.findIndex(c => c.eventoId === id);
+            if (checklistIndex !== -1) {
+                checklists.splice(checklistIndex, 1);
+                localStorage.setItem('checklists', JSON.stringify(checklists));
+            }
+            
+            // ✅ 6. SALVAR ORÇAMENTOS ATUALIZADOS
+            localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+            
+            showToast('Evento excluído com sucesso! Equipamentos liberados e orçamento atualizado.', 'success');
+            
+            // ✅ 7. ATUALIZAR TODAS AS INTERFACES
+            atualizarTodasInterfaces();
+        }
+    }
+}
+
+// ✅ FUNÇÃO PARA LIBERAR EQUIPAMENTOS DO EVENTO EXCLUÍDO
+function liberarEquipamentosEvento(equipamentosEvento) {
+    equipamentosEvento.forEach(equipEvento => {
+        const equipamento = equipamentos.find(e => e.id === equipEvento.id);
+        if (equipamento) {
+            equipamento.quantidade += equipEvento.quantidade;
+            console.log(`🔄 Equipamento liberado: ${equipEvento.nome} +${equipEvento.quantidade}`);
+        }
+    });
+    localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
+}
+
+// ✅ FUNÇÃO PARA ATUALIZAR TODAS AS INTERFACES
+function atualizarTodasInterfaces() {
+    // Atualizar eventos
+    carregarEventosAgendados();
+    carregarProximosEventos();
+    
+    // Atualizar orçamentos
+    aplicarFiltrosOrcamentos();
+    
+    // Atualizar checklist
+    if (document.getElementById('selecionar-evento')) {
+        carregarEventosChecklist();
+    }
+    
+    // Atualizar dashboard
+    if (document.getElementById('total-eventos')) {
+        atualizarDashboard();
+    }
+    
+    console.log('🔄 Todas as interfaces atualizadas');
+}
+
+// ✅ FUNÇÃO PARA LIMPAR EVENTOS MANUAIS (ATUALIZADA)
+function limparEventosManuais() {
+    console.log('🧹 Procurando eventos manuais para excluir...');
+    
+    const eventosManuais = eventos.filter(evento => !evento.orcamentoId);
+    
+    if (eventosManuais.length === 0) {
+        console.log('✅ Nenhum evento manual encontrado.');
+        showToast('Não há eventos manuais para excluir.', 'info');
+        return;
+    }
+    
+    if (confirm(`Encontrados ${eventosManuais.length} evento(s) manual(is).\nDeseja excluir todos os eventos que não vieram de orçamentos?`)) {
+        
+        // Liberar equipamentos de todos os eventos manuais
+        eventosManuais.forEach(evento => {
+            liberarEquipamentosEvento(evento.equipamentos);
+        });
+        
+        // Manter apenas eventos com orcamentoId
+        eventos = eventos.filter(evento => evento.orcamentoId);
+        localStorage.setItem('eventos', JSON.stringify(eventos));
+        
+        // Limpar checklists associados aos eventos excluídos
+        const eventosIdsManuais = eventosManuais.map(e => e.id);
+        checklists = checklists.filter(checklist => !eventosIdsManuais.includes(checklist.eventoId));
+        localStorage.setItem('checklists', JSON.stringify(checklists));
+        
+        showToast(`${eventosManuais.length} evento(s) manual(is) excluído(s) com sucesso!`, 'success');
+        
+        // Atualizar interfaces
+        atualizarTodasInterfaces();
+    }
+}
+
+// ✅ FUNÇÃO PARA REAPROVAR ORÇAMENTO (se quiser reativar)
+function reativarOrcamento(eventoId) {
+    const evento = eventos.find(e => e.id === eventoId);
+    if (!evento || !evento.orcamentoId) return;
+    
+    const orcamento = orcamentos.find(o => o.id === evento.orcamentoId);
+    if (!orcamento) return;
+    
+    if (confirm(`Deseja reativar o orçamento de "${orcamento.cliente}"?`)) {
+        
+        // Verificar disponibilidade dos equipamentos
+        const equipamentosDisponiveis = verificarDisponibilidade(evento.equipamentos);
+        
+        if (!equipamentosDisponiveis.todosDisponiveis) {
+            showToast(`Equipamento "${equipamentosDisponiveis.equipamentoIndisponivel}" não disponível!`, 'warning');
+            return;
+        }
+        
+        // Reservar equipamentos novamente
+        reservarEquipamentos(evento.equipamentos);
+        
+        // Atualizar status do orçamento
+        orcamento.status = 'aprovado';
+        localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+        
+        showToast('Orçamento reativado com sucesso!', 'success');
+        atualizarTodasInterfaces();
+    }
+}
+
+// ✅ MODIFICAR A FUNÇÃO carregarEventosAgendados PARA MOSTRAR STATUS DO ORÇAMENTO
+function carregarEventosAgendados() {
+    const container = document.getElementById('lista-eventos');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // ✅ FILTRAR: Mostrar apenas eventos aprovados (com orcamentoId)
+    const eventosAprovados = eventos.filter(evento => {
+        return evento.orcamentoId && evento.status === 'agendado';
+    });
+    
+    if (eventosAprovados.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--gray);">
+                <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 20px;"></i>
+                <h3>Nenhum Evento Agendado</h3>
+                <p>Os eventos aparecerão aqui automaticamente quando você aprovar orçamentos.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    eventosAprovados.forEach(evento => {
+        const orcamento = orcamentos.find(o => o.id === evento.orcamentoId);
+        const statusOrcamento = orcamento ? orcamento.status : 'não encontrado';
+        
+        const div = document.createElement('div');
+        div.className = 'evento-item';
+        div.style.cssText = `
+            background: rgba(40,40,40,0.8);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            position: relative;
+        `;
+        div.innerHTML = `
+            <h4 style="margin: 0 0 5px 0; color: var(--primary);">${evento.cliente}</h4>
+            <p style="margin: 0 0 5px 0;"><strong>Data:</strong> ${formatarData(evento.data)}</p>
+            <p style="margin: 0 0 5px 0;"><strong>Local:</strong> ${evento.local}</p>
+            <p style="margin: 0 0 5px 0;"><strong>Tipo:</strong> ${evento.tipoEvento}</p>
+            <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #4CAF50;">
+                <i class="fas fa-check-circle"></i> Evento Aprovado
+            </p>
+            <p style="margin: 0 0 5px 0; font-size: 0.8em; color: ${statusOrcamento === 'aprovado' ? '#4CAF50' : '#FF9800'};">
+                <i class="fas fa-file-invoice-dollar"></i> Orçamento: ${statusOrcamento.toUpperCase()}
+            </p>
+            <div style="margin-top: 10px;">
+                <strong>Equipamentos:</strong>
+                <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${evento.equipamentos.map(equip => `<li>${equip.nome} (${equip.quantidade}x)</li>`).join('')}
+                </ul>
+            </div>
+            
+            <!-- Botão Excluir Evento -->
+            <div style="margin-top: 10px; text-align: right;">
+                <button class="btn-excluir-evento" onclick="excluirEvento(${evento.id})" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                    <i class="fas fa-trash"></i> Excluir Evento
+                </button>
+                ${statusOrcamento === 'cancelado' ? `
+                <button class="btn-reativar" onclick="reativarOrcamento(${evento.id})" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 5px;">
+                    <i class="fas fa-redo"></i> Reativar
+                </button>
+                ` : ''}
+            </div>
         `;
         container.appendChild(div);
     });
