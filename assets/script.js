@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     inicializarMenuMobile();
     
     // Carregar dados iniciais se necessário
-    if (equipamentos.length === -1) {
+    if (equipamentos.length === 0) {
         equipamentos = [
             { id: 1, material: "Caixa de Som JBL", quantidade: 4, local: "barracao", categoria: "som", observacoes: "Boa estado" },
             { id: 2, material: "Mesa de Som Yamaha", quantidade: 2, local: "barracao", categoria: "som", observacoes: "Nova" },
