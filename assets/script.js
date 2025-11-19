@@ -114,21 +114,133 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Carregar dados iniciais se necessário
     if (equipamentos.length === 0) {
-        equipamentos = [
-            { id: 1, material: "Caixa de Som JBL", quantidade: 4, local: "barracao", categoria: "som", observacoes: "Boa estado" },
-            { id: 2, material: "Mesa de Som Yamaha", quantidade: 2, local: "barracao", categoria: "som", observacoes: "Nova" },
-            { id: 3, material: "Microfone Sem Fio", quantidade: 6, local: "silene", categoria: "som", observacoes: "2 com pilha fraca" },
-            { id: 4, material: "Par 56 LED", quantidade: 24, local: "barracao", categoria: "iluminacao", observacoes: "Todos funcionando" },
-            { id: 5, material: "Scanner Laser", quantidade: 2, local: "san-carlo", categoria: "iluminacao", observacoes: "Precisa de manutenção" },
-            { id: 6, material: "Estrutura Metalica 6x6", quantidade: 2, local: "barracao", categoria: "estrutura", observacoes: "Completa" },
-            { id: 7, material: "Projetor Epson", quantidade: 1, local: "silene", categoria: "projecao", observacoes: "Lâmpada nova" },
-            { id: 8, material: "Cabo de Rede 20m", quantidade: 10, local: "barracao", categoria: "acessorio", observacoes: "Bom estado" }
-
-        ];
+       equipamentos = [
+    { id: 1, material: "Caixa de Som JBL", quantidade: 4, local: "barracao", categoria: "som", observacoes: "Boa estado" },
+    { id: 2, material: "Mesa de Som Yamaha", quantidade: 2, local: "barracao", categoria: "som", observacoes: "Nova" },
+    { id: 3, material: "Microfone Sem Fio", quantidade: 6, local: "silene", categoria: "som", observacoes: "2 com pilha fraca" },
+    { id: 4, material: "Par 56 LED", quantidade: 24, local: "barracao", categoria: "iluminacao", observacoes: "Todos funcionando" },
+    { id: 5, material: "Scanner Laser", quantidade: 2, local: "san-carlo", categoria: "iluminacao", observacoes: "Precisa de manutenção" },
+    { id: 6, material: "Estrutura Metalica 6x6", quantidade: 2, local: "barracao", categoria: "estrutura", observacoes: "Completa" },
+    { id: 7, material: "Projetor Epson", quantidade: 1, local: "silene", categoria: "projecao", observacoes: "Lâmpada nova" },
+    { id: 8, material: "Cabo de Rede 20m", quantidade: 10, local: "barracao", categoria: "acessorio", observacoes: "Bom estado" },
+    
+    // Novos equipamentos - Estruturas
+    { id: 9, material: "Estrutura Q30 1m", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 10, material: "Estrutura Q30 1,5m", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 11, material: "Estrutura Q30 2,5m", quantidade: 6, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 12, material: "Estrutura Q30 3m", quantidade: 6, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 13, material: "Estrutura Q30 Cubos", quantidade: 8, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 14, material: "Estrutura Q30 Pés", quantidade: 9, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 15, material: "Estrutura Q30 Curva Grande", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 16, material: "Estrutura Q30 Curva Pequena", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 17, material: "Estrutura Q30 Sliver", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 18, material: "Estrutura Q30 Pal de Carga", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 19, material: "Estrutura Q30 Cinta de Sliver", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    
+    { id: 20, material: "Estrutura Q20 1m", quantidade: 11, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 21, material: "Estrutura Q20 1m", quantidade: 16, local: "san-carlo", categoria: "estrutura", observacoes: "" },
+    { id: 22, material: "Estrutura Q20 0,5m", quantidade: 4, local: "san-carlo", categoria: "estrutura", observacoes: "" },
+    { id: 23, material: "Estrutura Q20 Curva Grande", quantidade: 4, local: "san-carlo", categoria: "estrutura", observacoes: "" },
+    { id: 24, material: "Estrutura Q20 Curva Pequena", quantidade: 4, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 25, material: "Estrutura Q20 Cubo", quantidade: 3, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 26, material: "Estrutura Q20 Cubo", quantidade: 1, local: "silene", categoria: "estrutura", observacoes: "" },
+    
+    { id: 27, material: "Escada Pequena", quantidade: 2, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 28, material: "Escada Grande", quantidade: 1, local: "barracao", categoria: "estrutura", observacoes: "" },
+    
+    // Iluminação
+    { id: 29, material: "Pista de LED", quantidade: 4, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 30, material: "Placa de LED", quantidade: 16, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 31, material: "Placa infinytparis", quantidade: 20, local: "barracao", categoria: "iluminacao", observacoes: "18 funcionando" },
+    { id: 32, material: "Placa Paris", quantidade: 36, local: "barracao", categoria: "iluminacao", observacoes: "32 funcionando" },
+    { id: 33, material: "Placa de DJ Paris", quantidade: 4, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    
+    { id: 34, material: "Canhão Amber", quantidade: 20, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 35, material: "Canhão RGB", quantidade: 60, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 36, material: "Canhão RGB Banda", quantidade: 20, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 37, material: "Canhão RGB", quantidade: 4, local: "silene", categoria: "iluminacao", observacoes: "" },
+    { id: 38, material: "Luz Néon", quantidade: 16, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 39, material: "Ribalta UV", quantidade: 12, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 40, material: "Lâmpada Luz Negra", quantidade: 4, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 41, material: "Estrobo", quantidade: 2, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 42, material: "Estrobo de LED", quantidade: 1, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 43, material: "Estrobo de Lâmpada", quantidade: 1, local: "silene", categoria: "iluminacao", observacoes: "" },
+    { id: 44, material: "Laser", quantidade: 1, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 45, material: "Wale", quantidade: 3, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 46, material: "Wale", quantidade: 1, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 47, material: "Wale", quantidade: 2, local: "silene", categoria: "iluminacao", observacoes: "" },
+    { id: 48, material: "Movie de LED", quantidade: 3, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 49, material: "Movie de LED", quantidade: 4, local: "silene", categoria: "iluminacao", observacoes: "" },
+    { id: 50, material: "Globo Espelhado Grande", quantidade: 3, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 51, material: "Globo Espelhado 30cm", quantidade: 9, local: "silene", categoria: "iluminacao", observacoes: "" },
+    { id: 52, material: "Skypaper", quantidade: 1, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    
+    { id: 53, material: "Refletor de LED 50w", quantidade: 4, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 54, material: "Refletor de Lâmpada P", quantidade: 7, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 55, material: "Refletor de Lâmpada G", quantidade: 5, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 56, material: "Canhão de Lâmpada", quantidade: 20, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 57, material: "HQI", quantidade: 10, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 58, material: "Reator HQI", quantidade: 8, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    { id: 59, material: "Pim Bim", quantidade: 11, local: "barracao", categoria: "iluminacao", observacoes: "" },
+    
+    // Sonorização
+    { id: 60, material: "Caixa Grave 18 Leacs", quantidade: 1, local: "barracao", categoria: "som", observacoes: "ativo/passiva" },
+    { id: 61, material: "Caixa Grave 15 JBL Selenium", quantidade: 1, local: "barracao", categoria: "som", observacoes: "ativo/passiva" },
+    { id: 62, material: "Caixa 12 JBL Selenium Master", quantidade: 2, local: "barracao", categoria: "som", observacoes: "ativo/passiva" },
+    { id: 63, material: "Caixa 12 JBL Selenium JBL", quantidade: 1, local: "barracao", categoria: "som", observacoes: "ativo/passiva" },
+    { id: 64, material: "Caixa 12 JBL Selenium Master", quantidade: 1, local: "barracao", categoria: "som", observacoes: "passivo/com potencia" },
+    { id: 65, material: "Caixa 15 JBL Selenium Master", quantidade: 2, local: "barracao", categoria: "som", observacoes: "ativo/passiva" },
+    { id: 66, material: "Caixa 15 Transdutori", quantidade: 1, local: "barracao", categoria: "som", observacoes: "ativo/passiva" },
+    { id: 67, material: "Caixa 15 Passiva", quantidade: 2, local: "silene", categoria: "som", observacoes: "" },
+    { id: 68, material: "Caixa Grave 18 Duplo", quantidade: 4, local: "barracao", categoria: "som", observacoes: "passiva" },
+    
+    { id: 69, material: "Microfone Karsect", quantidade: 2, local: "barracao", categoria: "som", observacoes: "base com 2 mic" },
+    { id: 70, material: "Microfone Heat set", quantidade: 1, local: "barracao", categoria: "som", observacoes: "base com 1 mic" },
+    { id: 71, material: "Microfone AKG", quantidade: 2, local: "barracao", categoria: "som", observacoes: "base com 1 mic" },
+    { id: 72, material: "Microfone Shure com fio", quantidade: 1, local: "barracao", categoria: "som", observacoes: "" },
+    { id: 73, material: "Microfone Lê Som", quantidade: 1, local: "silene", categoria: "som", observacoes: "base com 1 mic" },
+    
+    { id: 74, material: "Mesa de Som Oneal", quantidade: 1, local: "silene", categoria: "som", observacoes: "" },
+    { id: 75, material: "Mesa de Som Behringer", quantidade: 2, local: "barracao", categoria: "som", observacoes: "" },
+    { id: 76, material: "Mesa de Som Wattsom P", quantidade: 1, local: "barracao", categoria: "som", observacoes: "" },
+    { id: 77, material: "Mesa de Som Wattsom G", quantidade: 2, local: "barracao", categoria: "som", observacoes: "" },
+    
+    { id: 78, material: "Controladora DJ Wego", quantidade: 1, local: "barracao", categoria: "som", observacoes: "" },
+    { id: 79, material: "Controladora DJ DDJ Ergo", quantidade: 1, local: "barracao", categoria: "som", observacoes: "" },
+    { id: 80, material: "Controladora DJ Xpoint", quantidade: 2, local: "barracao", categoria: "som", observacoes: "" },
+    
+    // Projeção
+    { id: 81, material: "Projetor", quantidade: 1, local: "silene", categoria: "projecao", observacoes: "" },
+    { id: 82, material: "Televisão Philco 48", quantidade: 4, local: "barracao", categoria: "projecao", observacoes: "" },
+    { id: 83, material: "Televisão Philco 39", quantidade: 2, local: "silene", categoria: "projecao", observacoes: "" },
+    { id: 84, material: "Televisão Philco 43", quantidade: 2, local: "barracao", categoria: "projecao", observacoes: "" },
+    { id: 85, material: "Televisão Philco 39", quantidade: 2, local: "manutencao", categoria: "projecao", observacoes: "" },
+    
+    // Acessórios e Controles
+    { id: 86, material: "Tripé", quantidade: 4, local: "barracao", categoria: "acessorio", observacoes: "" },
+    { id: 87, material: "Pedestal", quantidade: 4, local: "barracao", categoria: "acessorio", observacoes: "" },
+    { id: 88, material: "Máquina de Fumaça", quantidade: 5, local: "barracao", categoria: "acessorio", observacoes: "" },
+    { id: 89, material: "Inflável Estrela", quantidade: 4, local: "barracao", categoria: "acessorio", observacoes: "" },
+    { id: 90, material: "Inflável Quadrado", quantidade: 2, local: "barracao", categoria: "acessorio", observacoes: "" },
+    { id: 91, material: "Inflável Tubo", quantidade: 2, local: "barracao", categoria: "acessorio", observacoes: "" },
+    { id: 92, material: "Culer", quantidade: 4, local: "barracao", categoria: "acessorio", observacoes: "" },
+    
+    { id: 93, material: "Mesa DMX512 Preta", quantidade: 3, local: "barracao", categoria: "controle", observacoes: "" },
+    { id: 94, material: "Mesa DMX512 Operator", quantidade: 1, local: "silene", categoria: "controle", observacoes: "" },
+    { id: 95, material: "Mesa DMX512 Verde", quantidade: 1, local: "barracao", categoria: "controle", observacoes: "" },
+    { id: 96, material: "Control 512 Pista infinytparis", quantidade: 1, local: "barracao", categoria: "controle", observacoes: "" },
+    { id: 97, material: "Control 512 Pista de LED", quantidade: 1, local: "barracao", categoria: "controle", observacoes: "" },
+    { id: 98, material: "Control 512 Azul", quantidade: 1, local: "fernando-rancho", categoria: "controle", observacoes: "" },
+    { id: 99, material: "Mesa Pilot", quantidade: 1, local: "barracao", categoria: "controle", observacoes: "" },
+    
+    // Estruturas Adicionais
+    { id: 100, material: "Módulo de Palco 2x1", quantidade: 10, local: "barracao", categoria: "estrutura", observacoes: "" },
+    { id: 101, material: "Tábua de Palco 2x1", quantidade: 10, local: "barracao", categoria: "estrutura", observacoes: "" }
+];
         localStorage.setItem('equipamentos', JSON.stringify(equipamentos));
     }
     
-    if (eventos.length === 0) {
+    if (eventos.length === -1) {
         eventos = [
             {
                 id: 1,
