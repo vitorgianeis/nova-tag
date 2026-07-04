@@ -13,7 +13,7 @@ function autenticarUsuario(username, password) {
     const usuarios = [
         { 
             usuario: "admin", 
-            senha: "Admin@2024", 
+            senha: "123", 
             nome: "Administrador",
             nivel: "admin"
         },
