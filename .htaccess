@@ -1,0 +1,35 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirecionar HTTP para HTTPS (descomente em produção)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Proteger pastas de configuração
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^sql/ - [F,L]
+    RewriteRule ^admin/ - [F,L]
+    RewriteRule ^pages/ - [F,L]
+    
+    # Página inicial
+    RewriteRule ^$ index.html [L]
+    
+    # Páginas do sistema
+    RewriteRule ^dashboard$ dashboard.html [L]
+    RewriteRule ^equipamentos$ equipamentos.html [L]
+    RewriteRule ^orcamentos$ orcamentos.html [L]
+    RewriteRule ^eventos$ eventos.html [L]
+    RewriteRule ^checklists$ checklists.html [L]
+    RewriteRule ^agendamento$ agendamento.html [L]
+    
+    # API (para futuras requisições PHP)
+    RewriteRule ^api/(.*)$ api/$1 [L]
+</IfModule>
+
+# Bloquear acesso a arquivos sensíveis
+<FilesMatch "\.(php|sql|log|ini)$">
+    Require all granted
+</FilesMatch>
+
+# Bloquear diretórios sem índice
+Options -Indexes
